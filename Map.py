@@ -6,7 +6,7 @@ import dash_html_components as html
 import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 
-df = pd.read_csv('coordinates.csv')
+df = pd.read_csv('data/coordinates.csv')
 
 
 fig = go.Figure(data=go.Scattergeo(
