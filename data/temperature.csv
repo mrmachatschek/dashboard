@@ -1,0 +1,207 @@
+real_city,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec
+"Taipei, Taiwan",16,16,18,22,24,27,30,29,27,24,21,18
+"Abu Dhabi, United Arab Emirates",18,20,23,27,31,33,35,36,33,29,25,21
+"Auckland, New Zealand",20,20,19,17,14,12,11,12,13,15,16,18
+"Lima, Peru",23,24,23,22,20,19,18,17,18,19,20,22
+"Copenhagen, Denmark",0,1,3,6,12,15,17,17,14,10,5,2
+"Madrid, Spain",6,7,10,11,15,21,25,25,22,15,10,7
+"Las Vegas, NV, United States",9,12,14,19,25,30,34,33,27,21,13,8
+"Kiev, Ukraine",-5,-3,2,8,15,18,19,18,14,8,2,-2
+"Washington, DC, United States",4,5,9,14,19,24,27,26,22,15,11,5
+"Zurich, Switzerland",0,2,6,9,14,16,19,18,15,11,5,2
+"Bangkok, Thailand",27,28,30,31,30,30,30,30,29,29,28,26
+"Hong Kong, Hong Kong",16,18,20,24,26,28,29,29,27,26,22,17
+"Moscow, Russia",-8,-7,-2,6,13,18,19,17,12,6,-1,-6
+"Izmir, Turkey",8,9,11,15,19,24,26,26,23,18,14,10
+"Milan, Italy",3,6,10,13,19,23,25,25,20,15,9,4
+"Porto, Portugal",10,11,12,13,15,18,20,19,19,16,13,12
+"Wellington, New Zealand",18,19,17,15,13,10,10,11,12,14,14,16
+"Lahore, Pakistan",14,17,21,26,30,32,32,30,28,25,19,15
+"Tokyo, Japan",5,6,9,14,18,21,25,26,23,18,12,8
+"Seville (Sevilla), Spain",11,12,15,18,20,25,28,28,25,20,15,12
+"Dhaka, Bangladesh",18,21,26,29,29,30,29,29,29,28,24,19
+"Kathmandu, Nepal",9,12,16,20,22,23,22,22,22,20,15,11
+"Tampa, FL, United States",17,18,20,22,26,28,28,28,28,25,22,18
+"Halifax, Canada",-6,-6,-2,4,10,15,19,19,14,9,4,-3
+"Columbus, OH, United States",-2,0,5,13,18,23,25,24,20,13,7,1
+"Brasilia, Brazil",23,23,22,22,20,19,19,20,22,23,22,22
+"Manchester, United Kingdom",4,4,7,8,11,14,16,16,14,11,7,5
+"Orlando, FL, United States",15,16,19,22,25,27,28,28,27,24,20,17
+"Rome, Italy",8,9,12,14,21,23,26,24,22,18,13,10
+"Canberra, Australia",21,21,18,13,9,7,6,7,10,14,16,19
+"Houston, TX, United States",12,14,17,21,25,28,29,29,27,22,17,13
+"Cape Town, South Africa",22,23,21,18,16,13,13,13,14,16,18,20
+"Mumbai, India",24,25,27,29,30,29,28,28,28,29,28,26
+"Vilnius, Lithuania",-5,-4,1,6,13,16,17,17,12,7,2,-3
+"Athens, Greece",10,10,13,16,21,26,29,29,24,20,15,12
+"Cork, Ireland",5,5,7,8,11,13,16,15,13,11,8,7
+"The Hague (Den Haag), Netherlands",3,4,5,8,12,15,16,17,14,10,6,4
+"Dublin, Ireland",5,5,7,8,11,14,16,16,14,11,8,7
+"San Diego, CA, United States",14,15,16,17,18,20,22,23,22,20,17,14
+"Bucharest, Romania",-2,2,7,11,17,20,22,21,18,12,5,1
+"Dubai, United Arab Emirates",19,20,23,26,31,33,35,36,33,29,25,21
+"Jakarta, Indonesia",28,28,29,29,29,29,29,29,29,30,29,29
+"Bristol, United Kingdom",6,5,8,10,13,16,18,18,15,13,8,7
+"Indianapolis, IN, United States",-4,-1,6,11,17,22,24,23,19,13,6,0
+"Delhi, India",15,17,22,29,33,34,31,30,30,26,21,16
+"Sydney, Australia",23,23,22,19,16,14,13,14,16,18,20,22
+"Belgrade, Serbia",2,3,8,13,17,19,23,22,19,13,6,3
+"Buenos Aires, Argentina",25,22,22,19,15,12,12,14,15,18,21,23
+"Jeddah (Jiddah), Saudi Arabia",23,23,25,29,31,31,32,32,31,30,28,25
+"Chicago, IL, United States",-6,-4,3,10,15,21,23,22,18,12,5,-3
+"Reykjavik, Iceland",0,0,0,3,6,9,11,11,7,4,3,2
+"Riga, Latvia",-4,-5,1,5,12,16,17,17,12,8,3,-2
+"Campinas, Brazil",25,25,24,23,19,19,19,20,21,23,23,24
+"Baku, Azerbaijan",4,4,7,12,18,23,26,26,22,16,14,7
+"Adelaide, Australia",23,22,20,16,15,12,11,12,14,16,19,20
+"Rotterdam, Netherlands",3,4,6,9,13,15,17,17,15,10,7,4
+"Victoria, Canada",27,28,28,28,28,27,26,26,27,27,27,27
+"Zagreb, Croatia",0,3,8,9,15,18,21,21,16,11,5,1
+"Bergen, Norway",2,2,4,6,11,14,15,15,12,9,5,3
+"Recife, Brazil",29,29,29,29,28,27,27,27,27,28,29,29
+"Baltimore, MD, United States",3,4,9,15,20,25,28,27,23,16,11,5
+"Nicosia, Cyprus",11,11,13,16,19,23,26,26,24,20,16,13
+"Sao Paulo, Brazil",25,25,24,22,21,19,19,19,21,21,23,24
+"Kansas City, MO, United States",-1,2,8,15,20,25,28,27,22,15,8,2
+"Porto Alegre, Brazil",11,13,17,22,28,33,35,34,31,25,18,13
+"Durban, South Africa",25,25,25,23,20,18,18,19,20,21,22,24
+"Winnipeg, Canada",-16,-14,-6,5,13,17,20,19,14,6,-4,-13
+"Phoenix, AZ, United States",12,14,16,20,25,30,33,32,29,23,16,12
+"Dallas, TX, United States",9,11,15,20,24,28,30,31,27,20,14,9
+"Skopje, Macedonia",1,3,8,13,17,22,24,24,19,14,7,2
+"Ahmedabad, India",20,24,28,32,34,33,30,29,30,29,26,22
+"Detroit, MI, United States",-4,-2,3,9,15,20,23,22,18,11,5,-2
+"Beirut, Lebanon",13,13,15,17,22,25,27,28,27,25,19,15
+"Rio de Janeiro, Brazil",26,27,26,25,23,22,21,22,22,23,24,25
+"Istanbul, Turkey",6,6,8,12,16,22,24,24,21,16,12,8
+"Vancouver, Canada",4,5,7,9,13,15,17,18,15,10,6,4
+"Lagos, Nigeria",27,29,29,28,27,26,25,25,26,26,27,27
+"Haifa, Israel",14,13,16,19,22,25,27,28,25,24,20,15
+"Munich, Germany",-1,-1,5,7,12,15,18,18,14,10,4,1
+"Berlin, Germany",-1,1,4,9,14,17,18,18,15,10,5,1
+"Helsinki, Finland",-5,-6,-2,4,10,14,17,15,10,6,0,-4
+"Stockholm, Sweden",-3,-3,0,5,11,16,18,17,12,8,3,-1
+"Minneapolis, MN, United States",-9,-7,1,9,15,21,24,23,18,10,3,-6
+"Manila, Philippines",26,27,28,29,30,28,28,27,28,28,27,26
+"Thessaloniki, Greece",6,6,10,14,18,23,25,25,21,16,11,7
+"Oslo, Norway",-3,-3,2,5,12,16,18,16,12,7,2,-3
+"Caracas, Venezuela",22,22,23,24,24,24,24,24,24,24,23,22
+"Hamilton, Canada",20,21,20,19,18,16,15,14,15,15,16,18
+"Cairo, Egypt",14,14,17,21,25,27,28,28,26,23,19,15
+"Sofia, Bulgaria",-1,1,6,10,15,19,21,20,17,11,5,1
+"Miami, FL, United States",20,20,22,23,26,27,28,28,28,25,23,21
+"Quito, Ecuador",13,13,13,13,13,13,13,14,14,13,13,13
+"Limassol, Cyprus",12,12,13,16,20,24,26,26,24,21,17,13
+"Gdansk, Poland",-2,-2,1,6,11,14,17,17,12,8,2,-2
+"Varna, Bulgaria",3,3,6,11,16,21,23,23,19,14,9,5
+"San Juan, Puerto Rico",26,26,27,28,28,29,29,29,29,28,28,26
+"Brussels, Belgium",3,3,7,9,13,15,18,18,15,12,7,5
+"Amman, Jordan",8,9,12,16,21,24,25,25,24,20,14,10
+"Coimbatore, India",26,27,29,30,30,28,27,27,28,27,26,25
+"Vienna, Austria",-1,1,5,9,15,18,19,19,15,10,5,-1
+"Pittsburgh, PA, United States",-2,-1,5,12,17,21,23,23,19,13,7,1
+"Madison, WI, United States",-7,-5,1,8,15,20,22,21,16,10,3,-5
+"Sacramento, CA, United States",8,11,13,15,19,23,24,24,23,18,12,9
+"Eindhoven, Netherlands",2,4,7,9,13,16,18,17,15,12,7,4
+"Valencia, Spain",9,11,13,14,18,22,24,25,22,18,13,10
+"Portland, OR, United States",6,7,8,9,12,14,17,17,16,12,9,7
+"Riyadh, Saudi Arabia",15,17,21,27,32,35,36,36,33,28,22,16
+"Albuquerque, NM, United States",2,5,9,13,18,24,26,25,21,15,7,3
+"Doha, Qatar",21,21,21,21,21,21,21,21,21,21,21,21
+"Shanghai, China",4,6,9,15,20,24,29,29,24,19,13,7
+"Stuttgart, Germany",0,2,6,9,14,17,19,18,15,10,5,2
+"Bratislava, Slovakia",-1,1,6,11,16,19,21,20,17,11,4,1
+"Hamburg, Germany",0,1,4,7,12,15,17,17,14,10,5,2
+"Prague, Czech Republic",-1,1,4,9,13,16,18,17,14,9,3,0
+"Seoul, South Korea",-4,-2,4,11,17,21,24,24,19,13,5,-2
+"Chisinau, Moldova",-3,-2,5,10,16,20,21,21,17,11,4,0
+"San Antonio, TX, United States",11,11,13,15,18,22,25,25,23,20,15,12
+"Pune, India",26,26,28,30,30,29,28,28,29,29,29,27
+"Seattle, WA, United States",5,7,8,10,13,16,18,18,16,12,8,5
+"London, United Kingdom",5,7,9,11,14,16,19,19,17,13,10,7
+"Barcelona, Spain",10,10,12,13,16,20,23,24,22,18,13,11
+"Philadelphia, PA, United States",2,3,7,13,18,23,26,25,22,15,9,4
+"Novi Sad, Serbia",0,1,7,12,17,19,21,21,18,12,6,2
+"Edinburgh, United Kingdom",3,4,6,7,10,13,15,15,13,10,6,5
+"Raleigh, NC, United States",6,7,11,17,21,25,27,27,23,16,11,7
+"Luxembourg, Luxembourg",0,2,6,8,14,16,18,17,14,10,4,2
+"Calgary, Canada",-7,-5,-1,5,10,14,17,17,12,6,-2,-6
+"Nashville, TN, United States",12,12,12,12,12,12,12,12,12,12,12,12
+"Krakow (Cracow), Poland",-3,-2,4,8,14,17,19,18,14,9,3,-1
+"Austin, TX, United States",12,13,17,21,24,27,30,30,27,22,16,13
+"Antwerp, Belgium",3,3,7,9,13,15,18,18,15,12,7,5
+"Johannesburg, South Africa",21,20,19,16,14,10,11,14,16,18,19,20
+"Poznan, Poland",-1,-1,4,8,14,16,18,18,14,10,4,1
+"Edmonton, Canada",-12,-11,-4,4,11,14,16,16,12,5,-6,-11
+"Geneva, Switzerland",2,2,6,9,13,17,20,19,17,11,5,3
+"Colombo, Sri Lanka",27,27,28,29,29,28,28,28,28,27,27,27
+"Tehran, Iran",4,6,11,18,23,27,30,30,26,19,12,6
+"Boston, MA, United States",-2,0,4,9,15,20,24,23,19,12,7,1
+"Glasgow, United Kingdom",3,4,6,8,11,13,15,15,13,10,6,4
+"Odessa, Ukraine",-1,-2,3,9,16,20,22,21,17,11,5,2
+"Sarajevo, Bosnia And Herzegovina",-2,2,6,10,14,17,19,19,16,11,4,0
+"Atlanta, GA, United States",7,10,13,17,21,26,27,26,23,18,13,8
+"Belfast, United Kingdom",4,4,6,8,11,13,15,15,12,9,7,5
+"Amsterdam, Netherlands",3,4,6,8,12,15,17,17,15,11,7,4
+"Chennai, India",26,27,29,31,33,32,31,30,30,28,27,26
+"Muscat, Oman",21,22,26,30,34,35,35,32,32,30,26,23
+"Leeds, United Kingdom",3,4,5,7,10,12,14,15,12,9,5,3
+"San Francisco, CA, United States",10,11,11,11,13,13,14,14,14,14,13,10
+"Lisbon, Portugal",11,12,14,15,18,21,24,23,23,19,14,12
+"Hanoi, Vietnam",17,17,21,24,28,29,29,29,28,25,22,18
+"Paris, France",5,6,9,11,15,16,20,20,16,12,7,5
+"Warsaw, Poland",-2,-3,3,8,14,16,18,18,14,9,3,-1
+"Yerevan, Armenia",-3,1,6,13,18,23,27,26,21,14,7,1
+"Birmingham, United Kingdom",4,3,6,8,11,14,17,16,14,11,7,5
+"Bangalore, India",25,27,28,30,30,27,26,26,26,26,25,23
+"Nairobi, Kenya",20,21,21,20,19,18,17,17,19,20,20,19
+"Perth, Australia",3,3,5,7,10,12,15,15,12,10,6,4
+"Medellin, Colombia",16,17,17,17,17,17,16,16,17,16,16,16
+"Montevideo, Uruguay",24,23,21,17,14,11,11,12,14,17,19,22
+"Montreal, Canada",-9,-8,-2,6,14,18,21,21,16,9,3,-6
+"Ottawa, Canada",-10,-9,-3,6,14,18,22,20,16,9,2,-6
+"Curitiba, Brazil",22,22,22,19,16,15,15,16,17,19,20,22
+"Karachi, Pakistan",19,22,26,29,31,31,30,30,29,29,24,21
+"Melbourne, Australia",21,21,19,17,14,11,10,11,13,15,17,19
+"Beijing, China",-4,-2,5,14,20,24,27,25,20,13,5,-2
+"Toronto, Canada",-3,-3,1,7,14,16,21,21,18,11,5,-1
+"Guadalajara, Mexico",5,6,10,11,15,21,24,24,20,14,9,6
+"Bursa, Turkey",6,6,9,13,17,22,24,23,20,15,11,8
+"Brisbane, Australia",26,25,24,22,18,16,15,16,19,21,23,25
+"Kuala Lumpur, Malaysia",27,28,28,28,28,28,28,28,27,27,27,27
+"Budapest, Hungary",-1,1,6,11,16,19,21,21,17,12,5,1
+"Constanta, Romania",18,18,18,18,18,18,18,18,18,18,18,18
+"Panama City, Panama",12,12,12,12,12,12,12,12,12,12,12,12
+"Singapore, Singapore",26,27,27,27,27,27,27,27,27,27,26,26
+"Bogota, Colombia",14,13,15,15,15,14,14,14,14,14,14,12
+"Cologne, Germany",2,3,6,9,13,16,18,18,15,11,6,3
+"Tallinn, Estonia",-4,-5,-1,6,11,15,18,17,12,6,1,-2
+"Los Angeles, CA, United States",13,13,14,16,17,19,22,22,21,18,17,14
+"Trieste, Italy",5,6,10,13,18,21,24,24,21,16,10,7
+"Guatemala City, Guatemala",17,18,19,21,21,20,20,20,20,19,18,18
+"Belo Horizonte, Brazil",24,23,23,23,21,19,19,20,21,23,23,23
+"Islamabad, Pakistan",10,13,17,24,29,31,30,29,27,23,16,12
+"Santiago, Chile",21,20,18,15,12,9,9,10,12,15,17,20
+"Turin, Italy",3,3,7,10,14,18,21,21,18,12,7,4
+"Pretoria, South Africa",24,23,22,19,16,12,13,16,20,22,23,23
+"Milwaukee, WI, United States",-5,-3,2,8,14,19,23,22,18,12,5,-3
+"Ljubljana, Slovenia",-2,0,5,9,14,17,20,19,16,11,4,0
+"Ankara, Turkey",-1,1,5,10,13,17,20,20,17,11,5,1
+"San Jose, CA, United States",22,24,24,25,24,23,23,23,23,22,22,22
+"Lviv, Ukraine",-4,-3,2,8,13,16,17,17,13,9,3,-2
+"Gothenburg, Sweden",1,1,3,6,11,15,16,16,12,9,4,0
+"Frankfurt, Germany",1,3,6,9,14,17,19,19,15,10,5,2
+"Mexico City, Mexico",13,14,16,18,18,18,17,18,18,17,15,13
+"Salt Lake City, UT, United States",-2,1,5,10,15,21,26,24,18,12,5,-1
+"Ho Chi Minh City, Vietnam",27,28,29,30,30,29,28,29,28,28,27,27
+"Gent, Belgium",4,4,7,10,13,16,18,18,15,12,8,4
+"Chiang Mai, Thailand",23,25,28,30,30,29,28,28,28,27,25,22
+"Brno, Czech Republic",-2,-1,4,10,14,17,20,19,14,10,5,0
+"Cincinnati, OH, United States",2,1,7,13,18,23,25,24,20,13,8,1
+"Yekaterinburg, Russia",-14,-12,-5,4,10,17,19,15,10,2,-6,-12
+"Charlotte, NC, United States",-4,-2,5,12,17,22,24,23,19,12,6,-2
+"Tel Aviv-Yafo, Israel",13,13,15,19,21,24,26,26,25,23,18,14
+"Almaty, Kazakhstan",-6,-4,3,12,17,21,24,23,18,10,3,-3
+"Tucson, AZ, United States",12,13,16,20,25,30,31,30,28,22,16,12
+"Banja Luka, Bosnia And Herzegovina",1,2,8,13,17,20,23,23,18,12,8,3
+"New York, NY, United States",2,2,4,11,16,22,25,24,20,14,9,9
