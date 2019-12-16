@@ -49,7 +49,7 @@ sca_costs = go.Scatter(x=df_plot["Year"],y=df_plot["Cost of Living Index"])
 sca_health = go.Scatter(x=df_plot["Year"],y=df_plot["Health Care Index"])
 sca_safety = go.Scatter(x=df_plot["Year"],y=df_plot["Safety Index"])
 
-fig_lines = make_subplots(rows=2, cols=2)
+fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Pollution', 'Cost of Living','Health', 'Safety'))
 fig_lines.add_trace(
     sca_poll,
     row=1, col=1
@@ -89,24 +89,24 @@ app.title = 'Find Your Paradise'
 # app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
 
 app.layout = html.Div([
-        
+
         # title div
         html.Div([
             # large title
             html.H1(children = 'Title Placeholder')
-        ], id = 'title-div', className = 'row justify-content-md-center', 
+        ], id = 'title-div', className = 'row justify-content-md-center',
                  style = {'padding':15, 'margin-bottom':0}),
-    
+
     # first container holding preferences and map
     html.Div([
-        
-        # div holding preferences 
+
+        # div holding preferences
         html.Div([
 
             html.Div([
                 html.H6(children = 'Safety')
             ], id = 'first-preference-title', className = 'col'),
-            
+
             html.Div([
                 dcc.Slider(
                     id='slider-safety',
@@ -116,11 +116,11 @@ app.layout = html.Div([
                     value = .5
                 )
             ], id = 'first-preference', className = 'col'),
-            
+
             html.Div([
                 html.H6(children = 'Health Care')
             ], id = 'second-preference-title', className = 'col'),
-            
+
             html.Div([
                 dcc.Slider(
                     id='slider-health',
@@ -130,11 +130,11 @@ app.layout = html.Div([
                     value = .5
                 )
             ], id = 'second-preference', className = 'col'),
-            
+
             html.Div([
                 html.H6(children = 'Cost of Living')
             ], id = 'third-preference-title', className = 'col'),
-            
+
             html.Div([
                 dcc.Slider(
                     id='slider-costs',
@@ -144,11 +144,11 @@ app.layout = html.Div([
                     value = .5
                 )
             ], id = 'third-preference', className = 'col'),
-            
+
             html.Div([
                 html.H6(children = 'Pollution')
             ], id = 'fourth-preference-title', className = 'col'),
-            
+
             html.Div([
                 dcc.Slider(
                     id='slider-pollution',
@@ -158,27 +158,30 @@ app.layout = html.Div([
                     value = .5
                 )
             ], id = 'fourth-preference', className = 'col'),
-            
+
             # button div
             html.Div([
             html.Button(
                     id='submit-button',
                     children='Filter cities',
                     style={'fontSize':18}
-                ) 
+                )
             ],className= "col justify-content-md-center" ),
-             
+
         ], id = 'preferences-div', className = 'shadow p-3 mb-5 bg-white rounded', style = {'margin-right':20}),
-           
-        # map div 
+
+        # map div
         html.Div([
 
             dcc.Graph(id = 'fig-map',
                     figure = fig_map)
         ], id = 'map-div', className = 'col auto shadow p-9 mb-5 bg-white rounded'),
-        
+        ], id = 'first-container', className = 'row', style = {'margin-top':0}),
 
-    ], id = 'first-container', className = 'row', style = {'margin-top':0}),
+        html.Div([
+            dcc.Graph(id = 'fig-lines',
+                    figure = fig_lines)
+        ], id = 'chart-div', className = 'col auto'),
 
     ], id = 'outer-div', className = 'container')
 
@@ -238,8 +241,8 @@ def update_lines(a,b,c,d):
 
     top_five = top_five.sort_values("Year")
     cities = np.unique(top_five["City"].values)
-    fig_lines = make_subplots(rows=2, cols=2)
-    colors = ['blue', 'cyan', 'magenta', 
+    fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Pollution', 'Cost of Living','Health', 'Safety'))
+    colors = ['blue', 'cyan', 'magenta',
         "#636efa",  "#00cc96",  "#EF553B", 'brown']
 
     color_city = 0
@@ -295,8 +298,7 @@ def update_lines(a,b,c,d):
             row=1, col=2
         )
         color_city += 1
-
-        fig.update_layout()
+        fig_lines.update_layout(title="Comparison of Top Cities")
     return fig_lines
 
 if __name__ == '__main__':
