@@ -84,9 +84,16 @@ fig_pollution.update_layout(title = 'Pollution Index')
 ####################################################################################
 
 # load external CSS
-external_stylesheets = ['https://codepen.io/amyoshino/pen/jzXypZ.css']
-
-app = dash.Dash(__name__, external_stylesheets = external_stylesheets)
+external_ss = [
+    'https://codepen.io/chriddyp/pen/bWLwgP.css',
+    {
+        'href': 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css',
+        'rel': 'stylesheet',
+        'integrity': 'sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO',
+        'crossorigin': 'anonymous'
+    }
+]
+app = dash.Dash(__name__, external_stylesheets=external_ss)
 
 app.title = 'Find Your Paradise'
 
@@ -94,17 +101,25 @@ app.title = 'Find Your Paradise'
 # app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
 
 app.layout = html.Div(
+    # outer container
     html.Div([
+        
+        # title div
         html.Div([
+            # large title
             html.H1(children = 'Title Placeholder')
-        ], id = 'title-div', style = {'margin-left': 20}),
-         
+        ], id = 'title-div', className = 'row justify-content-md-center', 
+                 style = {'padding':15, 'margin-bottom':0}),
+    
+    # first container holding preferences and map
     html.Div([
+        
+        # div holding preferences 
         html.Div([
             
             html.Div([
-            html.H6(children = 'Safety')
-            ], id = 'first-preference-title', className = 'row'),
+                html.H6(children = 'Safety')
+            ], id = 'first-preference-title', className = 'col'),
             
             html.Div([
                 dcc.Slider(
@@ -114,11 +129,11 @@ app.layout = html.Div(
                     step = 0.5,
                     value = 1
                 )
-            ], id = 'first-preference', className = 'row', style = {'margin-left': 10}),
+            ], id = 'first-preference', className = 'col'),
             
             html.Div([
                 html.H6(children = 'Health Care')
-            ], id = 'second-preference-title', className = 'row'),
+            ], id = 'second-preference-title', className = 'col'),
             
             html.Div([
                 dcc.Slider(
@@ -128,11 +143,11 @@ app.layout = html.Div(
                     step = 0.5,
                     value = 1
                 )
-            ], id = 'second-preference', className = 'row', style = {'margin-left': 10}),
+            ], id = 'second-preference', className = 'col'),
             
             html.Div([
                 html.H6(children = 'Cost of Living')
-            ], id = 'third-preference-title', className = 'row'),
+            ], id = 'third-preference-title', className = 'col'),
             
             html.Div([
                 dcc.Slider(
@@ -142,11 +157,11 @@ app.layout = html.Div(
                     step = 0.5,
                     value = 1
                 )
-            ], id = 'third-preference', className = 'row', style = {'margin-left': 10}),
+            ], id = 'third-preference', className = 'col'),
             
             html.Div([
                 html.H6(children = 'Pollution')
-            ], id = 'fourth-preference-title', className = 'row'),
+            ], id = 'fourth-preference-title', className = 'col'),
             
             html.Div([
                 dcc.Slider(
@@ -156,30 +171,28 @@ app.layout = html.Div(
                     step = 0.5,
                     value = 1
                 )
-            ], id = 'fourth-preference', className = 'row', style = {'margin-left': 10}),
+            ], id = 'fourth-preference', className = 'col'),
             
+            # button div
             html.Div([
             html.Button(
                     id='submit-button',
                     children='Filter cities',
                     style={'fontSize':18}
                 ) 
-            ],className= "row" )  
-        ], id = 'preferences-div', className = 'three columns'),
-            
+            ],className= "col justify-content-md-center" ),
+             
+        ], id = 'preferences-div', className = 'shadow p-3 mb-5 bg-white rounded', style = {'margin-right':20}),
+           
+        # map div 
         html.Div([
             
             dcc.Graph(id = 'fig-map',
                     figure = fig_map)
-        ], id = 'map-div', className = 'nine columns'),
+        ], id = 'map-div', className = 'col auto shadow p-9 mb-5 bg-white rounded'),
         
-    ], id = 'preferences-map', className = 'twelve columns', style = {'margin-left': 20,
-                                                                      'margin-right':20}),
-    
-    html.Div([
-        html.H6(children = 'The analytically best place on earth for you is: ')
-        
-    ], id = 'map-subtext', className = 'twelve columns'),
+
+    ], id = 'first-container', className = 'row', style = {'margin-top':0}),
     
     html.Div([
         
@@ -211,7 +224,7 @@ app.layout = html.Div(
         
     ], id = 'second-row', className = 'twelve columns')
 
-    ], id = 'outer-div')
+    ], id = 'outer-div', className = 'container')
 )
 
 ####################################################################################
