@@ -88,9 +88,7 @@ app.title = 'Find Your Paradise'
 # Bootstrap CSS
 # app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
 
-app.layout = html.Div(
-    # outer container
-    html.Div([
+app.layout = html.Div([
         
         # title div
         html.Div([
@@ -181,17 +179,8 @@ app.layout = html.Div(
         
 
     ], id = 'first-container', className = 'row', style = {'margin-top':0}),
-    
-    html.Div([
-        html.H6(children = 'The analytically best place on earth for you is: '),
-        html.Div([
-            dcc.Graph(id = 'fig-lines',
-                      figure = fig_lines)
-
-        ], id = 'first-right-graph', className = 'twelve columns'),
 
     ], id = 'outer-div', className = 'container')
-)
 
 ####################################################################################
 ################# -- template end -- #############################################
