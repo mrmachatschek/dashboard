@@ -24,8 +24,55 @@ df_original = pd.read_csv("data/indices_scaled_inversed.csv", index_col=0)
 df=df_original.copy()
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
 
-################# -- map figure -- #############################################
+#### sun plot ####
+df_sun = pd.read_csv("data/sun.csv")
+df_sun_test = df_sun.iloc[0,:]
+months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+data = []
+for i in range(1,len(months) + 1):
+    x = [i for j in range(0, df_sun_test[months[i-1]])]
+    y = [j + 0.5 + j*0.03 for j in range(0, df_sun_test[months[i-1]])]
+    data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol=18, color="yellow", size=11), hoverinfo="none"))
+    data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="yellow", size=10), hoverinfo="none"))
 
+layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
+        xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Sunny days in " + df_sun_test["real_city"]),
+        yaxis=dict(showgrid=False, zeroline=False, range=[0,30]))
+
+fig_sun = go.Figure(data, layout)
+
+#### rain plot ####
+df_rain = pd.read_csv("data/rain.csv")
+df_rain_test = df_rain.iloc[0,:]
+months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+data = []
+for i in range(1,len(months) + 1):
+    x = [i for j in range(0, df_rain_test[months[i-1]])]
+    y = [j + 0.5 + j*0.03 for j in range(0, df_rain_test[months[i-1]])]
+    data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="blue", size=11), hoverinfo="none"))
+
+layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
+        xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy days in " + df_rain_test["real_city"]),
+        yaxis=dict(showgrid=False, zeroline=False, range=[0,30]))
+
+fig_rain = go.Figure(data, layout)
+
+#### temp plot ####
+df_temp = pd.read_csv("data/temperature.csv")
+df_temp_test = df_temp.iloc[0,:]
+months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+data = []
+x = [j for j in range(1, 13)]
+y = df_temp_test[months].values
+data.append(go.Scatter(x=x,y=y ,marker=dict(symbol="circle", color="gray", size=8)))
+
+layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
+        xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature in " + df_temp_test["real_city"]),
+        yaxis=dict(showgrid=False, zeroline=False))
+
+fig_temp = go.Figure(data, layout)
+
+################# -- map figure -- #############################################
 
 fig_map = go.Figure(data=go.Scattergeo(
         lon = df_coord['lng'],
@@ -170,6 +217,17 @@ app.layout = html.Div([
             dcc.Graph(id = 'fig-lines',
                     figure = fig_lines)
         ], id = 'chart-div', className = 'col auto'),
+        
+        html.Div([
+            html.Div([
+                dcc.Graph(figure=fig_temp, config={'displayModeBar': False})
+            ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
+            html.Div([
+                dcc.Graph(figure=fig_sun, config={'displayModeBar': False})
+            ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
+            html.Div([
+                dcc.Graph(figure=fig_rain, config={'displayModeBar': False})
+            ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row")
 
     ], id = 'outer-div', className = 'container')
 
