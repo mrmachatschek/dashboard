@@ -10,20 +10,17 @@ from dash.dependencies import Input, Output, State
 
 def filtering(df,name,year=0,index=0):
     df = df[df['City'] == name]
-
     if year == 0:
         df = df[df['City'] == name]
-
     elif year == year:
         df = df[df['Year'] == year]
-
     if index == 0:
         df
     elif index == index:
         df = df[index]
     return df
 
-df_original = pd.read_csv("data/qol_indices.csv", index_col=0)
+df_original = pd.read_csv("data/indices_scaled_inversed.csv", index_col=0)
 df=df_original.copy()
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
 
@@ -49,7 +46,7 @@ sca_costs = go.Scatter(x=df_plot["Year"],y=df_plot["Cost of Living Index"])
 sca_health = go.Scatter(x=df_plot["Year"],y=df_plot["Health Care Index"])
 sca_safety = go.Scatter(x=df_plot["Year"],y=df_plot["Safety Index"])
 
-fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Pollution', 'Cost of Living','Health', 'Safety'))
+fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
 fig_lines.add_trace(
     sca_poll,
     row=1, col=1
@@ -132,7 +129,7 @@ app.layout = html.Div([
             ], id = 'second-preference', className = 'col'),
 
             html.Div([
-                html.H6(children = 'Cost of Living')
+                html.H6(children = 'Cheap Living')
             ], id = 'third-preference-title', className = 'col'),
 
             html.Div([
@@ -146,7 +143,7 @@ app.layout = html.Div([
             ], id = 'third-preference', className = 'col'),
 
             html.Div([
-                html.H6(children = 'Pollution')
+                html.H6(children = 'Clean Air')
             ], id = 'fourth-preference-title', className = 'col'),
 
             html.Div([
@@ -159,23 +156,14 @@ app.layout = html.Div([
                 )
             ], id = 'fourth-preference', className = 'col'),
 
-            # button div
-            html.Div([
-            html.Button(
-                    id='submit-button',
-                    children='Filter cities',
-                    style={'fontSize':18}
-                )
-            ],className= "col justify-content-md-center" ),
-
-        ], id = 'preferences-div', className = 'shadow p-3 mb-5 bg-white rounded', style = {'margin-right':20}),
+        ], id = 'preferences-div', className = 'shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
 
         # map div
         html.Div([
 
             dcc.Graph(id = 'fig-map',
                     figure = fig_map)
-        ], id = 'map-div', className = 'col auto shadow p-9 mb-5 bg-white rounded'),
+        ], id = 'map-div', className = 'col auto shadow p-8 mb-5 bg-white rounded'),
         ], id = 'first-container', className = 'row', style = {'margin-top':0}),
 
         html.Div([
@@ -241,7 +229,7 @@ def update_lines(a,b,c,d):
 
     top_five = top_five.sort_values("Year")
     cities = np.unique(top_five["City"].values)
-    fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Pollution', 'Cost of Living','Health', 'Safety'))
+    fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
     colors = ['blue', 'cyan', 'magenta',
         "#636efa",  "#00cc96",  "#EF553B", 'brown']
 
