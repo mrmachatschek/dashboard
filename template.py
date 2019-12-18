@@ -216,7 +216,7 @@ app.layout = html.Div([
         html.Div([
             dcc.Graph(id = 'fig-lines',
                     figure = fig_lines)
-        ], id = 'chart-div', className = 'col auto'),
+        ], id = 'chart-div', className = 'col auto shadow p-4 mb-5 bg-white rounded'),
         
         html.Div([
             html.Div([
@@ -344,7 +344,7 @@ def update_lines(a,b,c,d):
             row=1, col=2
         )
         color_city += 1
-        fig_lines.update_layout(title="Comparison of Top Cities")
+        fig_lines.update_layout(plot_bgcolor="#e5ecf6", margin=dict(t=110,b=15,r=15,l=15), title=dict(text="Comparison of Top Cities", y=0.98, x=0.5, xanchor="center", yanchor="top"), legend_orientation="h", legend=dict(x=0.1, y=1.2) )
     return fig_lines
 
 if __name__ == '__main__':
