@@ -20,57 +20,11 @@ def filtering(df,name,year=0,index=0):
         df = df[index]
     return df
 
-df_original = pd.read_csv("data/indices_scaled_inversed.csv", index_col=0)
+df_original = pd.read_csv("data/joined.csv", index_col=0)
 df=df_original.copy()
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
 
-#### sun plot ####
-df_sun = pd.read_csv("data/sun.csv")
-df_sun_test = df_sun.iloc[0,:]
-months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-data = []
-for i in range(1,len(months) + 1):
-    x = [i for j in range(0, df_sun_test[months[i-1]])]
-    y = [j + 0.5 + j*0.03 for j in range(0, df_sun_test[months[i-1]])]
-    data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol=18, color="yellow", size=11), hoverinfo="none"))
-    data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="yellow", size=10), hoverinfo="none"))
 
-layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-        xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Sunny days in " + df_sun_test["real_city"]),
-        yaxis=dict(showgrid=False, zeroline=False, range=[0,30]))
-
-fig_sun = go.Figure(data, layout)
-
-#### rain plot ####
-df_rain = pd.read_csv("data/rain.csv")
-df_rain_test = df_rain.iloc[0,:]
-months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-data = []
-for i in range(1,len(months) + 1):
-    x = [i for j in range(0, df_rain_test[months[i-1]])]
-    y = [j + 0.5 + j*0.03 for j in range(0, df_rain_test[months[i-1]])]
-    data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="blue", size=11), hoverinfo="none"))
-
-layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-        xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy days in " + df_rain_test["real_city"]),
-        yaxis=dict(showgrid=False, zeroline=False, range=[0,30]))
-
-fig_rain = go.Figure(data, layout)
-
-#### temp plot ####
-df_temp = pd.read_csv("data/temperature.csv")
-df_temp_test = df_temp.iloc[0,:]
-months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-data = []
-x = [j for j in range(1, 13)]
-y = df_temp_test[months].values
-data.append(go.Scatter(x=x,y=y ,marker=dict(symbol="circle", color="gray", size=8)))
-
-layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-        xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature in " + df_temp_test["real_city"]),
-        yaxis=dict(showgrid=False, zeroline=False))
-
-fig_temp = go.Figure(data, layout)
 
 ################# -- map figure -- #############################################
 
@@ -93,7 +47,7 @@ sca_costs = go.Scatter(x=df_plot["Year"],y=df_plot["Cost of Living Index"])
 sca_health = go.Scatter(x=df_plot["Year"],y=df_plot["Health Care Index"])
 sca_safety = go.Scatter(x=df_plot["Year"],y=df_plot["Safety Index"])
 
-fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
+fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
 fig_lines.add_trace(
     sca_poll,
     row=1, col=1
@@ -104,11 +58,11 @@ fig_lines.add_trace(
 )
 fig_lines.add_trace(
     sca_health,
-    row=2, col=1
+    row=1, col=3
 )
 fig_lines.add_trace(
     sca_safety,
-    row=2, col=2
+    row=1, col=4
 )
 
 ####################################################################################
@@ -146,9 +100,10 @@ app.layout = html.Div([
 
         # div holding preferences
         html.Div([
-
             html.Div([
-                html.H6(children = 'Safety')
+                html.H2(children = 'Choose your preferences')], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10, }),
+            html.Div([
+                html.H5(children = 'Safety')
             ], id = 'first-preference-title', className = 'col'),
 
             html.Div([
@@ -159,10 +114,10 @@ app.layout = html.Div([
                     step = 0.1,
                     value = .5
                 )
-            ], id = 'first-preference', className = 'col'),
+            ], id = 'first-preference', className = 'col', style = {'margin-bottom':10}),
 
             html.Div([
-                html.H6(children = 'Health Care')
+                html.H5(children = 'Health Care')
             ], id = 'second-preference-title', className = 'col'),
 
             html.Div([
@@ -173,10 +128,10 @@ app.layout = html.Div([
                     step = 0.1,
                     value = .5
                 )
-            ], id = 'second-preference', className = 'col'),
+            ], id = 'second-preference', className = 'col', style = {'margin-bottom':10}),
 
             html.Div([
-                html.H6(children = 'Cheap Living')
+                html.H5(children = 'Cheap Living')
             ], id = 'third-preference-title', className = 'col'),
 
             html.Div([
@@ -187,10 +142,10 @@ app.layout = html.Div([
                     step = 0.1,
                     value = .5
                 )
-            ], id = 'third-preference', className = 'col'),
+            ], id = 'third-preference', className = 'col', style = {'margin-bottom':10}),
 
             html.Div([
-                html.H6(children = 'Clean Air')
+                html.H5(children = 'Clean Air')
             ], id = 'fourth-preference-title', className = 'col'),
 
             html.Div([
@@ -199,15 +154,14 @@ app.layout = html.Div([
                     min = 0,
                     max = 1,
                     step = 0.1,
-                    value = .5
+                    value = .5,
                 )
-            ], id = 'fourth-preference', className = 'col'),
+            ], id = 'fourth-preference', className = 'col',  style = {'margin-bottom':10}),
 
-        ], id = 'preferences-div', className = 'shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
+        ], id = 'preferences-div', className = 'col-3 shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
 
         # map div
         html.Div([
-
             dcc.Graph(id = 'fig-map',
                     figure = fig_map)
         ], id = 'map-div', className = 'col auto shadow p-8 mb-5 bg-white rounded'),
@@ -220,13 +174,13 @@ app.layout = html.Div([
         
         html.Div([
             html.Div([
-                dcc.Graph(figure=fig_temp, config={'displayModeBar': False})
+                dcc.Graph(id="fig-temp", config={'displayModeBar': False})
             ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
             html.Div([
-                dcc.Graph(figure=fig_sun, config={'displayModeBar': False})
+                dcc.Graph(id="fig-sun", config={'displayModeBar': False})
             ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
             html.Div([
-                dcc.Graph(figure=fig_rain, config={'displayModeBar': False})
+                dcc.Graph(id="fig-rain", config={'displayModeBar': False})
             ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row")
 
     ], id = 'outer-div', className = 'container')
@@ -262,7 +216,8 @@ def update_map(a,b,c,d):
         lat = coord_tf['lat'],
         text = coord_tf.index.values,
         mode = 'markers',
-        marker_color = "red",
+        marker_color = "blue",
+        marker_size = 10
         ))
 
     fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),dragmode=False ,
@@ -270,82 +225,206 @@ def update_map(a,b,c,d):
 
     return fig_map
 
-################# -- safety callback -- #############################################
+################# -- lines callback -- #############################################
 @app.callback(
     Output('fig-lines', 'figure'),
     [Input('slider-safety', 'value'),
      Input('slider-health', 'value'),
      Input('slider-costs', 'value'),
      Input('slider-pollution', 'value'),
+     Input("fig-map","clickData")
      ])
-def update_lines(a,b,c,d):
-    df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
-    df_temp = df.sort_values("final_score", ascending=False)
-    top_five = df_temp[df_temp["Year"] == 2019].head(n=5)
-    top_five = top_five.sort_values("final_score", ascending=False)
-    top_five = df_temp[df_temp["City"].isin(top_five["City"].values)]
+def update_bars(a,b,c,d,clickData):
+    if clickData != None:
+        top_one = df[df["City"] == clickData["points"][0]["text"]]
+        top_one = top_one.sort_values("Year")
+    
+    else: 
+        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
+        df_temp_bars = df.sort_values("final_score", ascending=False)
+        top_one = df_temp_bars[df_temp_bars["Year"] == 2019].head(n=1)
+        top_one = df_temp_bars[df_temp_bars["City"].isin(top_one["City"].values)]
 
-    top_five = top_five.sort_values("Year")
-    cities = np.unique(top_five["City"].values)
-    fig_lines = make_subplots(rows=2, cols=2,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
+        top_one = top_one.sort_values("Year")
+    city = np.unique(top_one["City"].values)[0]
+    fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
     colors = ['blue', 'cyan', 'magenta',
         "#636efa",  "#00cc96",  "#EF553B", 'brown']
 
     color_city = 0
-    for city in cities:
 
-        year = top_five[top_five["City"] == city]["Year"]
-        y_poll = top_five[top_five["City"] == city]["Pollution Index"]
-        y_safe = top_five[top_five["City"] == city]["Safety Index"]
-        y_heal = top_five[top_five["City"] == city]["Health Care Index"]
-        y_cost = top_five[top_five["City"] == city]["Cost of Living Index"]
+    year = top_one["Year"]
+    y_poll = top_one["Pollution Index"]
+    y_safe = top_one["Safety Index"]
+    y_heal = top_one["Health Care Index"]
+    y_cost = top_one["Cost of Living Index"]
 
-        fig_lines.add_trace(
-            go.Scatter(
-                x = year,
-                y = y_poll,
-                name = city,
-                showlegend = False,
-                mode='lines',
-                marker_color = colors[color_city]
-            ),
-            row=1, col=1
-        )
-        fig_lines.add_trace(
-            go.Scatter(
-                x=year,
-                y=y_safe,
-                name=city,
-                showlegend=False,
-                mode='lines',
-                marker_color = colors[color_city]
-            ),
-            row=2, col=2
-        )
-        fig_lines.add_trace(
-            go.Scatter(
-                x=year,
-                y=y_heal,
-                name=city,
-                showlegend=False,
-                mode='lines',
-                marker_color = colors[color_city]
-            ),
-            row=2, col=1
-        )
-        fig_lines.add_trace(
-            go.Scatter(
-                x=year,
-                y=y_cost,
-                name=city,
-                mode='lines',
-                marker_color = colors[color_city]
-            ),
-            row=1, col=2
-        )
-        color_city += 1
-        fig_lines.update_layout(plot_bgcolor="#e5ecf6", margin=dict(t=110,b=15,r=15,l=15), title=dict(text="Comparison of Top Cities", y=0.98, x=0.5, xanchor="center", yanchor="top"), legend_orientation="h", legend=dict(x=0.1, y=1.2) )
+    fig_lines.add_trace(
+        go.Bar(
+            x = year,
+            y = y_poll,
+            name = city,
+            showlegend = False,
+            marker_color = colors[color_city]
+        ),
+        row=1, col=1
+    )
+    fig_lines.add_trace(
+        go.Bar(
+            x=year,
+            y=y_safe,
+            name=city,
+            showlegend=False,
+            marker_color = colors[color_city]
+        ),
+        row=1, col=4
+    )
+    fig_lines.add_trace(
+        go.Bar(
+            x=year,
+            y=y_heal,
+            name=city,
+            showlegend=False,
+            marker_color = colors[color_city]
+        ),
+        row=1, col=3
+    )
+    fig_lines.add_trace(
+        go.Bar(
+            x=year,
+            y=y_cost,
+            name=city,
+            marker_color = colors[color_city]
+        ),
+        row=1, col=2
+    )
+    fig_lines.update_layout(plot_bgcolor="white", 
+                            margin=dict(t=110,b=15,r=15,l=15), 
+                            title=dict(text="Indicators of " + city, y=0.98, x=0.5, xanchor="center", yanchor="top"), 
+                            showlegend=False,
+                            )
     return fig_lines
+
+################# -- sun callback -- #############################################
+@app.callback(
+    Output('fig-sun', 'figure'),
+    [Input('slider-safety', 'value'),
+     Input('slider-health', 'value'),
+     Input('slider-costs', 'value'),
+     Input('slider-pollution', 'value'),
+     Input("fig-map","clickData")
+     ])
+def update_sun(a,b,c,d,clickData):
+    if clickData != None:
+        top_one = df[df["City"] == clickData["points"][0]["text"]]
+        top_one = top_one.sort_values("Year")
+    
+    else: 
+        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
+        df_temp_sun = df.sort_values("final_score", ascending=False)
+        top_one = df_temp_sun[df_temp_sun["Year"] == 2019].head(n=1)
+        top_one = df_temp_sun[df_temp_sun["City"].isin(top_one["City"].values)]
+        top_one = top_one.sort_values("Year")
+        
+    city = np.unique(top_one["City"].values)[0]
+    
+    df_sun = pd.read_csv("data/sun.csv")
+    top_sun = df_sun.loc[df_sun["real_city"] == city]
+    months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    data = []
+    for i in range(1,len(months) + 1):
+        x = [i for j in range(0, top_sun[months[i-1]].values[0])]
+        y = [j + 0.5 + j*0.03 for j in range(0, top_sun[months[i-1]].values[0])]
+        data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol=18, color="yellow", size=11), hoverinfo="none"))
+        data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="yellow", size=10), hoverinfo="none"))
+
+    layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Sunny hours per day in " + city),
+            yaxis=dict(showgrid=False, zeroline=False, range=[0,18]))
+
+    fig_sun = go.Figure(data, layout)
+    return fig_sun
+
+################# -- sun callback -- #############################################
+@app.callback(
+    Output('fig-rain', 'figure'),
+    [Input('slider-safety', 'value'),
+     Input('slider-health', 'value'),
+     Input('slider-costs', 'value'),
+     Input('slider-pollution', 'value'),
+     Input("fig-map","clickData")
+     ])
+def update_rain(a,b,c,d,clickData):
+    if clickData != None:
+        top_one = df[df["City"] == clickData["points"][0]["text"]]
+        top_one = top_one.sort_values("Year")
+    
+    else:    
+        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
+        df_temp_rain = df.sort_values("final_score", ascending=False)
+        top_one = df_temp_rain[df_temp_rain["Year"] == 2019].head(n=1)
+        top_one = df_temp_rain[df_temp_rain["City"].isin(top_one["City"])]
+
+        top_one = top_one.sort_values("Year")
+    city = np.unique(top_one["City"].values)[0]
+    
+    df_rain = pd.read_csv("data/rain.csv")
+    top_rain = df_rain.loc[df_rain["real_city"] == city]
+    
+    months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    data = []
+    for i in range(1,len(months) + 1):
+        x = [i for j in range(0, top_rain[months[i-1]].values[0])]
+        y = [j + 0.5 + j*0.03 for j in range(0, top_rain[months[i-1]].values[0])]
+        data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="blue", size=11), hoverinfo="none"))
+
+    layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy days in " + city),
+            yaxis=dict(showgrid=False, zeroline=False, range=[0,30]))
+
+    fig_rain = go.Figure(data, layout)
+    return fig_rain
+
+################# -- sun callback -- #############################################
+@app.callback(
+    Output('fig-temp', 'figure'),
+    [Input('slider-safety', 'value'),
+     Input('slider-health', 'value'),
+     Input('slider-costs', 'value'),
+     Input('slider-pollution', 'value'),
+     Input("fig-map","clickData")
+     ])
+def update_temp(a,b,c,d,clickData):
+    if clickData != None:
+        top_one = df[df["City"] == clickData["points"][0]["text"]]
+        top_one = top_one.sort_values("Year")
+    
+    else:    
+        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
+        df_tempo = df.sort_values("final_score", ascending=False)
+        top_one = df_tempo[df_tempo["Year"] == 2019].head(n=1)
+        top_one = df_tempo[df_tempo["City"].isin(top_one["City"].values)]
+        top_one = top_one.sort_values("Year")
+    city = np.unique(top_one["City"].values)[0]
+    
+    df_tempe = pd.read_csv("data/temperature.csv")
+    top_temp = df_tempe.loc[df_tempe["real_city"] == city]
+    
+    months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+    data = []
+    x = [j for j in range(1, 13)]
+    y = top_temp[months].values[0]
+    data.append(go.Scatter(x=x,y=y ,marker=dict(symbol="circle", color="gray", size=8)))
+
+    layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature in " + city),
+            yaxis=dict(showgrid=False, zeroline=False))
+
+    fig_temp = go.Figure(data, layout)
+    return fig_temp
+
+
+
 
 if __name__ == '__main__':
     app.run_server(debug = True)
