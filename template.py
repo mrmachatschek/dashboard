@@ -24,7 +24,28 @@ df_original = pd.read_csv("data/joined.csv", index_col=0)
 df=df_original.copy()
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
 
+#### stacked chart ####
+trace1 = go.Bar(y = df['City'], 
+                x = df['Safety Index'], 
+                name = 'Safety',
+                orientation = 'h')
+trace2 = go.Bar(y = df['City'], 
+                x = df['Health Care Index'], 
+                name = 'Health',
+                orientation = 'h')
+trace3 = go.Bar(y = df['City'], 
+                x = df['Cost of Living Index'], 
+                name = 'Cost of Living',
+                orientation = 'h')
+trace4 = go.Bar(y = df['City'], 
+                x = df['Pollution Index'], 
+                name = 'Pollution',
+                orientation = 'h')
 
+data = [trace1, trace2, trace3, trace4]
+
+layout = go.Layout(barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h')
+fig_stacked = go.Figure(data, layout)
 
 ################# -- map figure -- #############################################
 
@@ -33,7 +54,8 @@ fig_map = go.Figure(data=go.Scattergeo(
         lat = df_coord['lat'],
         text = df_coord.index.values,
         mode = 'markers',
-        marker_color = "red",
+        marker_color = "blue",
+        marker_size = 5
         ))
 
 fig_map.update_layout( margin = dict(l=0, r=0, t=0, b=0),
@@ -100,6 +122,7 @@ app.layout = html.Div([
 
         # div holding preferences
         html.Div([
+            html.Div(id="df-storage", style={"display": "None"}),
             html.Div([
                 html.H2(children = 'Choose your preferences')], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10, }),
             html.Div([
@@ -181,7 +204,13 @@ app.layout = html.Div([
             ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
             html.Div([
                 dcc.Graph(id="fig-rain", config={'displayModeBar': False})
-            ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row")
+            ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row"),
+        
+        html.Div([
+            html.Div([
+                dcc.Graph(id = 'stacked-graph', figure = fig_stacked)
+            ], className = 'col shadow p-4 mb-5 bg-white rounded', id = 'stacked-bar-div')
+        ])
 
     ], id = 'outer-div', className = 'container')
 
@@ -194,22 +223,31 @@ app.layout = html.Div([
 ################# -- callbacks start -- #############################################
 ####################################################################################
 
-################# -- map callback -- #############################################
+################# -- df storage callback -- #############################################
 @app.callback(
-    Output('fig-map', 'figure'),
+    Output('df-storage', 'children'),
     [Input('slider-safety', 'value'),
      Input('slider-health', 'value'),
      Input('slider-costs', 'value'),
      Input('slider-pollution', 'value'),
      ])
-def update_map(a,b,c,d):
+def update_df(a,b,c,d):
     df = df_original.copy()
     df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
     df_cy = df[df["Year"] == 2019]
     df_cy = df_cy.sort_values("final_score", ascending=False)
 
-    top_five = df_cy.head(n=10)
-    coord_tf = df_coord[df_coord.index.isin(top_five["City"].values)]
+    top_ten = df[df["City"].isin(df_cy.head(n=10)["City"].values)]
+    return top_ten.to_json()
+
+################# -- map callback -- #############################################
+@app.callback(
+    Output('fig-map', 'figure'),
+    [Input("df-storage", "children")])
+def update_map(top_ten):
+    top_ten = pd.read_json(top_ten)
+    
+    coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
 
     fig_map = go.Figure(data=go.Scattergeo(
         lon = coord_tf['lng'],
@@ -225,27 +263,21 @@ def update_map(a,b,c,d):
 
     return fig_map
 
-################# -- lines callback -- #############################################
+################# -- bars callback -- #############################################
 @app.callback(
     Output('fig-lines', 'figure'),
-    [Input('slider-safety', 'value'),
-     Input('slider-health', 'value'),
-     Input('slider-costs', 'value'),
-     Input('slider-pollution', 'value'),
-     Input("fig-map","clickData")
-     ])
-def update_bars(a,b,c,d,clickData):
+    [Input("df-storage", "children"), 
+     Input("fig-map","clickData")])
+def update_bars(top_ten,clickData):
+    top_ten = pd.read_json(top_ten)    
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
     
     else: 
-        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
-        df_temp_bars = df.sort_values("final_score", ascending=False)
-        top_one = df_temp_bars[df_temp_bars["Year"] == 2019].head(n=1)
-        top_one = df_temp_bars[df_temp_bars["City"].isin(top_one["City"].values)]
-
-        top_one = top_one.sort_values("Year")
+        top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
+        top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+        
     city = np.unique(top_one["City"].values)[0]
     fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
     colors = ['blue', 'cyan', 'magenta',
@@ -308,23 +340,16 @@ def update_bars(a,b,c,d,clickData):
 ################# -- sun callback -- #############################################
 @app.callback(
     Output('fig-sun', 'figure'),
-    [Input('slider-safety', 'value'),
-     Input('slider-health', 'value'),
-     Input('slider-costs', 'value'),
-     Input('slider-pollution', 'value'),
-     Input("fig-map","clickData")
-     ])
-def update_sun(a,b,c,d,clickData):
+    [Input("df-storage", "children"), 
+     Input("fig-map","clickData")])
+def update_sun(top_ten,clickData):
+    top_ten = pd.read_json(top_ten) 
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
     
     else: 
-        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
-        df_temp_sun = df.sort_values("final_score", ascending=False)
-        top_one = df_temp_sun[df_temp_sun["Year"] == 2019].head(n=1)
-        top_one = df_temp_sun[df_temp_sun["City"].isin(top_one["City"].values)]
-        top_one = top_one.sort_values("Year")
+        top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
         
     city = np.unique(top_one["City"].values)[0]
     
@@ -345,27 +370,19 @@ def update_sun(a,b,c,d,clickData):
     fig_sun = go.Figure(data, layout)
     return fig_sun
 
-################# -- sun callback -- #############################################
+################# -- rain callback -- #############################################
 @app.callback(
     Output('fig-rain', 'figure'),
-    [Input('slider-safety', 'value'),
-     Input('slider-health', 'value'),
-     Input('slider-costs', 'value'),
-     Input('slider-pollution', 'value'),
-     Input("fig-map","clickData")
-     ])
-def update_rain(a,b,c,d,clickData):
+    [Input("df-storage", "children"), 
+     Input("fig-map","clickData")])
+def update_rain(top_ten,clickData):
+    top_ten = pd.read_json(top_ten)    
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
     
-    else:    
-        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
-        df_temp_rain = df.sort_values("final_score", ascending=False)
-        top_one = df_temp_rain[df_temp_rain["Year"] == 2019].head(n=1)
-        top_one = df_temp_rain[df_temp_rain["City"].isin(top_one["City"])]
-
-        top_one = top_one.sort_values("Year")
+    else: 
+        top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
     city = np.unique(top_one["City"].values)[0]
     
     df_rain = pd.read_csv("data/rain.csv")
@@ -385,26 +402,19 @@ def update_rain(a,b,c,d,clickData):
     fig_rain = go.Figure(data, layout)
     return fig_rain
 
-################# -- sun callback -- #############################################
+################# -- temperature callback -- #############################################
 @app.callback(
     Output('fig-temp', 'figure'),
-    [Input('slider-safety', 'value'),
-     Input('slider-health', 'value'),
-     Input('slider-costs', 'value'),
-     Input('slider-pollution', 'value'),
-     Input("fig-map","clickData")
-     ])
-def update_temp(a,b,c,d,clickData):
+    [Input("df-storage", "children"), 
+     Input("fig-map","clickData")])
+def update_temp(top_ten,clickData):
+    top_ten = pd.read_json(top_ten)    
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
     
-    else:    
-        df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
-        df_tempo = df.sort_values("final_score", ascending=False)
-        top_one = df_tempo[df_tempo["Year"] == 2019].head(n=1)
-        top_one = df_tempo[df_tempo["City"].isin(top_one["City"].values)]
-        top_one = top_one.sort_values("Year")
+    else: 
+        top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
     city = np.unique(top_one["City"].values)[0]
     
     df_tempe = pd.read_csv("data/temperature.csv")
@@ -424,6 +434,41 @@ def update_temp(a,b,c,d,clickData):
     return fig_temp
 
 
+################# -- stacked bar callback -- #############################################
+@app.callback(
+    Output('stacked-graph','figure'),
+    [Input("df-storage", "children")])
+def update_bars(top_ten):
+    top_ten = pd.read_json(top_ten)    
+   
+    top_ten = top_ten.sort_values("final_score")
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    
+    trace1 = go.Bar(y = top_ten_cy['City'], 
+                    x = top_ten_cy['Safety Index'], 
+                    name = 'Safety',
+                    orientation = 'h')
+    trace2 = go.Bar(y = top_ten_cy['City'], 
+                    x = top_ten_cy['Health Care Index'], 
+                    name = 'Health',
+                    orientation = 'h')
+    trace3 = go.Bar(y = top_ten_cy['City'], 
+                    x = top_ten_cy['Cost of Living Index'], 
+                    name = 'Cost of Living',
+                    orientation = 'h')
+    trace4 = go.Bar(y = top_ten_cy['City'], 
+                    x = top_ten_cy['Pollution Index'], 
+                    name = 'Pollution',
+                    orientation = 'h')
+
+    data = [trace1, trace2, trace3, trace4]
+
+    layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
+            xaxis=dict(showgrid=False, zeroline=False),
+            yaxis=dict(showgrid=False, zeroline=False))
+    fig_stacked = go.Figure(data, layout)
+    return fig_stacked
+    
 
 
 if __name__ == '__main__':
