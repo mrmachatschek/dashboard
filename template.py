@@ -20,7 +20,7 @@ def filtering(df,name,year=0,index=0):
         df = df[index]
     return df
 
-df_original = pd.read_csv("data/joined.csv", index_col=0)
+df_original = pd.read_csv("data/joined_continent.csv", index_col=0)
 df = df_original.copy()
 clickCount = 0
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
@@ -126,6 +126,26 @@ app.layout = html.Div([
             html.Div(id="df-storage", style={"display": "None"}),
             html.Div([
                 html.H2(children = 'Choose your preferences')], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10, }),
+
+            html.Div([
+                html.H5(children = 'Continent')
+            ], id = 'country-preference-title', className = 'col'),
+
+            html.Div([
+                dcc.Dropdown(
+                    id='dropdown-continent',
+                    options=[
+                        {'label':'Asia','value':'Asia'},
+                        {'label':'Oceania','value':'Oceania'},
+                        {'label':'North America','value':'North America'},
+                        {'label':'Europe','value':'Europe'},
+                        {'label':'South America','value':'South America'},
+                        {'label':'Africa','value':'Africa'}
+                    ],
+                    value=None
+                    ),
+            ], id = 'dropdown', className = 'col', style = {'margin-bottom':10}),
+
             html.Div([
                 html.H5(children = 'Safety')
             ], id = 'first-preference-title', className = 'col'),
@@ -234,8 +254,9 @@ app.layout = html.Div([
      Input('slider-costs', 'value'),
      Input('slider-pollution', 'value'),
      Input('show-all', 'n_clicks'),
+     Input('dropdown-continent', 'value'),
      ])
-def update_df(a,b,c,d,clicks):
+def update_df(a,b,c,d,clicks,continent):
     df = df_original.copy()
     df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
     df_cy = df[df["Year"] == 2019]
@@ -246,7 +267,8 @@ def update_df(a,b,c,d,clicks):
         if (clicks > clickCount):
             top_ten = df
             clickCount = clicks
-
+    if (continent!= None):
+        top_ten = top_ten[top_ten["Continent"] == continent]
 
     return top_ten.to_json()
 
