@@ -261,14 +261,21 @@ app.layout = html.Div([
 ################# -- callbacks start -- #############################################
 ####################################################################################
 
-################# -- df storage callback -- #############################################
+################# -- continent callback -- #############################################
+@app.callback(
+    Output('fig-map', 'clickData'),
+    [Input('dropdown-continent', 'value')])
+def reset_clickData(n_clicks):
+    return None
+
+
 @app.callback(
     Output('dropdown-continent', 'value'),
     [Input('show-all', 'n_clicks')])
 def cleardrop(clicks):
     if clicks != None:
         return None
-
+################# -- df storage callback -- #############################################
 @app.callback(
     Output('df-storage', 'children'),
     [Input('slider-safety', 'value'),
