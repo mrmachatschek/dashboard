@@ -56,11 +56,26 @@ fig_map = go.Figure(data=go.Scattergeo(
         text = df_coord.index.values,
         mode = 'markers',
         marker_color = "blue",
-        marker_size = 5
+        marker_size = 7
         ))
 
-fig_map.update_layout( margin = dict(l=0, r=0, t=0, b=0),
-                       geo=dict(showframe=False, showcoastlines=False, showcountries=True, countrywidth=0.1))
+fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
+                        dragmode=False ,
+                        geo=dict(
+                            showland = True,
+                            scope = "world", # can be updated when continent is
+                            landcolor = "rgb(212, 212, 212)",
+                            subunitcolor = "rgb(255, 255, 255)",
+                            coastlinecolor = "rgb(255, 255, 255)",
+                            countrycolor = "rgb(255, 255, 255)",
+                            showlakes = True,
+                            lakecolor = "rgb(255, 255, 255)",
+                            showsubunits = True,
+                            showcountries = True,
+                            framecolor = "rgb(255, 255, 255)",
+                            resolution = 50,
+                            countrywidth=0.1,
+                        ))
 
 df_plot = filtering(df, 'Abu Dhabi, United Arab Emirates')
 df_plot = df_plot.sort_values("Year")
@@ -248,6 +263,13 @@ app.layout = html.Div([
 
 ################# -- df storage callback -- #############################################
 @app.callback(
+    Output('dropdown-continent', 'value'),
+    [Input('show-all', 'n_clicks')])
+def cleardrop(clicks):
+    if clicks != None:
+        return None
+
+@app.callback(
     Output('df-storage', 'children'),
     [Input('slider-safety', 'value'),
      Input('slider-health', 'value'),
@@ -257,18 +279,24 @@ app.layout = html.Div([
      Input('dropdown-continent', 'value'),
      ])
 def update_df(a,b,c,d,clicks,continent):
+    global df
     df = df_original.copy()
+    global selected
+    selected = continent
     df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
     df_cy = df[df["Year"] == 2019]
     df_cy = df_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(df_cy.head(n=10)["City"].values)]
     global clickCount
-    if clicks != None:
+    if clicks != None :
         if (clicks > clickCount):
             top_ten = df
             clickCount = clicks
+
     if (continent!= None):
-        top_ten = top_ten[top_ten["Continent"] == continent]
+        top_ten = df[df["Continent"] == continent]
+        df = top_ten
+
 
     return top_ten.to_json()
 
@@ -277,21 +305,46 @@ def update_df(a,b,c,d,clicks,continent):
     Output('fig-map', 'figure'),
     [Input("df-storage", "children")])
 def update_map(top_ten):
+    global df
     top_ten = pd.read_json(top_ten)
 
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
 
+    coord_tf = pd.merge(coord_tf, top_ten, how='left',left_on="City", right_on="City")
+
+
     fig_map = go.Figure(data=go.Scattergeo(
         lon = coord_tf['lng'],
         lat = coord_tf['lat'],
-        text = coord_tf.index.values,
+        text = coord_tf["City"],
         mode = 'markers',
-        marker_color = "blue",
-        marker_size = 10
-        ))
+        marker = dict(
+            size = 7,
+            #autocolorscale = False,
+            #colorscale = 'RdBu',
+            #cmin = df["final_score"].min(),
+            color = "blue", #coord_tf["final_score"]
+            #cmax = coord_tf['final_score'].max(),
+            #colorbar_title="Weighted Score"
+        )))
 
-    fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),dragmode=False ,
-                          geo=dict(showframe=False, showcoastlines=False, showcountries=True, countrywidth=0.1))
+    fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
+                        dragmode=False ,
+                        geo=dict(
+                            showland = True,
+                            scope = "world", # can be updated when continent is
+                            landcolor = "rgb(212, 212, 212)",
+                            subunitcolor = "rgb(255, 255, 255)",
+                            coastlinecolor = "rgb(255, 255, 255)",
+                            countrycolor = "rgb(255, 255, 255)",
+                            showlakes = True,
+                            lakecolor = "rgb(255, 255, 255)",
+                            showsubunits = True,
+                            showcountries = True,
+                            framecolor = "rgb(255, 255, 255)",
+                            resolution = 50,
+                            countrywidth=0.1,
+                        ))
 
     return fig_map
 
