@@ -73,7 +73,7 @@ fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
                             showsubunits = True,
                             showcountries = True,
                             framecolor = "rgb(255, 255, 255)",
-                            resolution = 50,
+                            #resolution = 50,
                             countrywidth=0.1,
                         ))
 
@@ -126,26 +126,16 @@ app.title = 'Find Your Paradise'
 
 app.layout = html.Div([
 
-        # title div
-        html.Div([
-            # large title
-            html.H1(children = 'Title Placeholder')
-        ], id = 'title-div', className = 'row justify-content-md-center',
-                 style = {'padding':15, 'margin-bottom':0}),
+    html.Div(id="df-storage", style={"display": "None"}),
 
-    # first container holding preferences and map
+    # title div
     html.Div([
+        html.H1(children = 'Title Placeholder')
+        ], id = 'title-div', className = 'row justify-content-md-center', style = {'padding':15, 'margin-bottom':0}),
 
-        # div holding preferences
+    # first container holding first page
+    html.Div([
         html.Div([
-            html.Div(id="df-storage", style={"display": "None"}),
-            html.Div([
-                html.H2(children = 'Choose your preferences')], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10, }),
-
-            html.Div([
-                html.H5(children = 'Continent')
-            ], id = 'country-preference-title', className = 'col'),
-
             html.Div([
                 dcc.Dropdown(
                     id='dropdown-continent',
@@ -157,100 +147,174 @@ app.layout = html.Div([
                         {'label':'South America','value':'South America'},
                         {'label':'Africa','value':'Africa'}
                     ],
-                    value=None
+                    value="Continent",
+                    placeholder="Continent"
                     ),
-            ], id = 'dropdown', className = 'col', style = {'margin-bottom':10}),
-
+                ], className="col"),
             html.Div([
-                html.H5(children = 'Safety')
-            ], id = 'first-preference-title', className = 'col'),
-
+                dcc.Dropdown(
+                    id='dropdown-2',
+                    options=[
+                        {'label':'Asia','value':'Asia'},
+                        {'label':'Oceania','value':'Oceania'},
+                        {'label':'North America','value':'North America'},
+                        {'label':'Europe','value':'Europe'},
+                        {'label':'South America','value':'South America'},
+                        {'label':'Africa','value':'Africa'}
+                    ],
+                    value="Continent",
+                    placeholder="Country"
+                    )
+                ], className="col"),
             html.Div([
-                dcc.Slider(
-                    id='slider-safety',
-                    min = 0,
-                    max = 1,
-                    step = 0.1,
-                    value = .5
-                )
-            ], id = 'first-preference', className = 'col', style = {'margin-bottom':10}),
-
+                dcc.Dropdown(
+                    id='dropdown-4',
+                    options=[
+                        {'label':'Asia','value':'Asia'},
+                        {'label':'Oceania','value':'Oceania'},
+                        {'label':'North America','value':'North America'},
+                        {'label':'Europe','value':'Europe'},
+                        {'label':'South America','value':'South America'},
+                        {'label':'Africa','value':'Africa'}
+                    ],
+                    value="Continent",
+                    placeholder="City"
+                    )
+                ], className="col"),
             html.Div([
-                html.H5(children = 'Health Care')
-            ], id = 'second-preference-title', className = 'col'),
-
+                dcc.Dropdown(
+                    id='dropdown-5',
+                    options=[
+                        {'label':'Asia','value':'Asia'},
+                        {'label':'Oceania','value':'Oceania'},
+                        {'label':'North America','value':'North America'},
+                        {'label':'Europe','value':'Europe'},
+                        {'label':'South America','value':'South America'},
+                        {'label':'Africa','value':'Africa'}
+                    ],
+                    value="Continent",
+                    placeholder="Climate"
+                    )
+                ], className="col"),
             html.Div([
-                dcc.Slider(
-                    id='slider-health',
-                    min = 0,
-                    max = 1,
-                    step = 0.1,
-                    value = .5
-                )
-            ], id = 'second-preference', className = 'col', style = {'margin-bottom':10}),
-
-            html.Div([
-                html.H5(children = 'Cheap Living')
-            ], id = 'third-preference-title', className = 'col'),
-
-            html.Div([
-                dcc.Slider(
-                    id='slider-costs',
-                    min = 0,
-                    max = 1,
-                    step = 0.1,
-                    value = .5
-                )
-            ], id = 'third-preference', className = 'col', style = {'margin-bottom':10}),
-
-            html.Div([
-                html.H5(children = 'Clean Air')
-            ], id = 'fourth-preference-title', className = 'col'),
-
-            html.Div([
-                dcc.Slider(
-                    id='slider-pollution',
-                    min = 0,
-                    max = 1,
-                    step = 0.1,
-                    value = .5,
-                )
-            ], id = 'fourth-preference', className = 'col',  style = {'margin-bottom':10}),
-
-            html.Button('Show All', id='show-all'),
-
-        ], id = 'preferences-div', className = 'col-3 shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
-
-        # map div
+                dcc.Dropdown(
+                    id='dropdown-6',
+                    options=[
+                        {'label':'Asia','value':'Asia'},
+                        {'label':'Oceania','value':'Oceania'},
+                        {'label':'North America','value':'North America'},
+                        {'label':'Europe','value':'Europe'},
+                        {'label':'South America','value':'South America'},
+                        {'label':'Africa','value':'Africa'}
+                    ],
+                    value="Continent",
+                    placeholder="Rainfall"
+                    )
+                ], className="col")
+        ], className = 'row shadow p-3 mb-2 mr-2 ml-2 bg-white rounded'),
+        # div holding preferences
         html.Div([
-            dcc.Graph(id = 'fig-map',
-                    figure = fig_map)
-        ], id = 'map-div', className = 'col auto shadow p-8 mb-5 bg-white rounded'),
-        ], id = 'first-container', className = 'row', style = {'margin-top':0}),
+            html.Div([
+                html.Div([
+                    html.H2(children = 'Choose your preferences')], style = {'margin-bottom':5,'margin-top':10,'margin-right':10,'margin-left':10, }),
+                    html.Div(["Choose the importance of the following factors. On the selection pan above, you can narrow down the results by region."], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10 }),
 
+                html.Div([
+                    html.H6(children = 'Safety')
+                ], id = 'first-preference-title', className = 'col'),
+
+                html.Div([
+                    dcc.Slider(
+                        id='slider-safety',
+                        min = 0,
+                        max = 1,
+                        step = 0.1,
+                        value = .5
+                    )
+                ], id = 'first-preference', className = 'col', style = {'margin-bottom':10}),
+
+                html.Div([
+                    html.H6(children = 'Health Care')
+                ], id = 'second-preference-title', className = 'col'),
+
+                html.Div([
+                    dcc.Slider(
+                        id='slider-health',
+                        min = 0,
+                        max = 1,
+                        step = 0.1,
+                        value = .5
+                    )
+                ], id = 'second-preference', className = 'col', style = {'margin-bottom':10}),
+
+                html.Div([
+                    html.H6(children = 'Cheap Living')
+                ], id = 'third-preference-title', className = 'col'),
+
+                html.Div([
+                    dcc.Slider(
+                        id='slider-costs',
+                        min = 0,
+                        max = 1,
+                        step = 0.1,
+                        value = .5
+                    )
+                ], id = 'third-preference', className = 'col', style = {'margin-bottom':10}),
+
+                html.Div([
+                    html.H6(children = 'Clean Air')
+                ], id = 'fourth-preference-title', className = 'col'),
+
+                html.Div([
+                    dcc.Slider(
+                        id='slider-pollution',
+                        min = 0,
+                        max = 1,
+                        step = 0.1,
+                        value = .5,
+                    )
+                ], id = 'fourth-preference', className = 'col',  style = {'margin-bottom':10}),
+
+                html.Button('Show All', id='show-all'),
+            ], id = 'preferences-div', className = 'col-3 shadow p-4 mr-4 mb-5 bg-white rounded'),
+            html.Div([
+                html.Div([html.Div([html.H5("Your city is")],),html.Div([html.H5("Vienna")])], className = 'shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H5("Average Temperature")]),html.Div([html.H5("20°C")],)], className = 'shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H5("Rainy days per year")]),html.Div([html.H5("16")],)], className = 'shadow mb-3 p-4 bg-white rounded'),
+            ],className="col mr-2"),
+
+            # map div
+            html.Div([
+                dcc.Graph(id = 'fig-map',
+                        figure = fig_map)
+            ], id = 'map-div', className = 'col-7 shadow mb-5 bg-white rounded'),
+        ], id = 'second-main-row', className = 'row ml-2 mr-2'),
+        
         html.Div([
-            dcc.Graph(id = 'fig-lines',
-                    figure = fig_lines)
-        ], id = 'chart-div', className = 'col auto shadow p-4 mb-5 bg-white rounded'),
+            dcc.Graph(id = 'fig-lines',figure = fig_lines) 
+        ],className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
+        
+        html.Div([
+            html.Div([
+                dcc.Graph(id = 'stacked-graph', figure = fig_stacked)
+            ], className = 'col-4 shadow p-4 mb-4 mr-4 bg-white rounded', id = 'stacked-bar-div'),
+            html.Div([
+                dcc.Graph(id = 'dots-graph')  
+            ], className="col  shadow p-4 mb-4 bg-white rounded")
+        ], id = 'chart-div', className = 'row ml-2 mr-2'),
 
         html.Div([
             html.Div([
                 dcc.Graph(id="fig-temp", config={'displayModeBar': False})
-            ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
+            ], className = 'col shadow p-4 mb-5 mr-4 bg-white rounded'),
             html.Div([
                 dcc.Graph(id="fig-sun", config={'displayModeBar': False})
-            ], className = 'col shadow p-4 mb-5 bg-white rounded', style = {'margin-right':20}),
+            ], className = 'col shadow p-4 mb-5 mr-4 bg-white rounded'),
             html.Div([
                 dcc.Graph(id="fig-rain", config={'displayModeBar': False})
-            ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row"),
-
-        html.Div([
-            html.Div([
-                dcc.Graph(id = 'stacked-graph', figure = fig_stacked)
-            ], className = 'col shadow p-4 mb-5 bg-white rounded', id = 'stacked-bar-div')
-        ])
-
-    ], id = 'outer-div', className = 'container')
+            ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row mr-2 ml-2"),
+    ], id = 'outer-div', className = 'mb-2 mr-2 ml-2 p-1')
+],className="bg-light")
 
 ####################################################################################
 ################# -- template end -- #############################################
@@ -323,7 +387,7 @@ def update_map(top_ten):
     fig_map = go.Figure(data=go.Scattergeo(
         lon = coord_tf['lng'],
         lat = coord_tf['lat'],
-        text = coord_tf["City"],
+        text = coord_tf.index,
         mode = 'markers',
         marker = dict(
             size = 7,
@@ -349,7 +413,7 @@ def update_map(top_ten):
                             showsubunits = True,
                             showcountries = True,
                             framecolor = "rgb(255, 255, 255)",
-                            resolution = 50,
+                            #resolution = 50,
                             countrywidth=0.1,
                         ))
 
@@ -530,7 +594,7 @@ def update_temp(top_ten,clickData):
 @app.callback(
     Output('stacked-graph','figure'),
     [Input("df-storage", "children")])
-def update_bars(top_ten):
+def update_stackbar(top_ten):
     top_ten = pd.read_json(top_ten)
 
     top_ten = top_ten.sort_values("final_score")
@@ -555,11 +619,33 @@ def update_bars(top_ten):
 
     data = [trace1, trace2, trace3, trace4]
 
-    layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
+    layout=go.Layout(showlegend=False, title="Top cities compared", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
             xaxis=dict(showgrid=False, zeroline=False),
             yaxis=dict(showgrid=False, zeroline=False))
     fig_stacked = go.Figure(data, layout)
     return fig_stacked
+
+################# -- dots callback -- #############################################
+@app.callback(
+    Output('dots-graph','figure'),
+    [Input("df-storage", "children")])
+def update_dots(top_ten):
+    top_ten = pd.read_json(top_ten)
+
+    top_ten = top_ten.sort_values("final_score")
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    trace1 = go.Scatter(y=["Pollution Index" for i in range(0,len(top_ten_cy["Pollution Index"].values))],x=top_ten_cy["Pollution Index"], mode="markers", )
+    trace2 = go.Scatter(y=["Safety Index" for i in range(0,len(top_ten_cy["Safety Index"].values))],x=top_ten_cy["Safety Index"], mode="markers")
+    trace3 = go.Scatter(y=["Cost of Living Index" for i in range(0,len(top_ten_cy["Cost of Living Index"].values))],x=top_ten_cy["Cost of Living Index"], mode="markers")
+    trace4 = go.Scatter(y=["Health Care Index" for i in range(0,len(top_ten_cy["Health Care Index"].values))],x=top_ten_cy["Health Care Index"], mode="markers")
+
+    data = [trace1,trace2, trace3, trace4]
+
+    layout=go.Layout(showlegend=False, title="Top cities compared", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
+            xaxis=dict(showgrid=False, zeroline=False),
+            yaxis=dict(showgrid=False, zeroline=False))
+    fig_dot = go.Figure(data, layout)
+    return fig_dot
 
 
 
