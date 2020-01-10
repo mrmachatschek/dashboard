@@ -60,7 +60,7 @@ fig_map = go.Figure(data=go.Scattergeo(
         ))
 
 fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
-                        dragmode=False ,
+                        dragmode=False,
                         geo=dict(
                             showland = True,
                             scope = "world", # can be updated when continent is
@@ -135,9 +135,15 @@ app.layout = html.Div([
 
     # first container holding first page
     html.Div([
+        # div holding preferences
         html.Div([
             html.Div([
-                dcc.Dropdown(
+                html.Div([
+                    html.H2(children = 'Choose your preferences')], style = {'margin-bottom':5,'margin-top':10,'margin-right':10,'margin-left':10, }),
+                    html.Div(["Choose the importance of the following factors. You can also filter the results by continent."], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10 }),
+
+                html.Div([
+                    dcc.Dropdown(
                     id='dropdown-continent',
                     options=[
                         {'label':'Asia','value':'Asia'},
@@ -148,79 +154,12 @@ app.layout = html.Div([
                         {'label':'Africa','value':'Africa'}
                     ],
                     value="Continent",
-                    placeholder="Continent"
-                    ),
-                ], className="col"),
-            html.Div([
-                dcc.Dropdown(
-                    id='dropdown-2',
-                    options=[
-                        {'label':'Asia','value':'Asia'},
-                        {'label':'Oceania','value':'Oceania'},
-                        {'label':'North America','value':'North America'},
-                        {'label':'Europe','value':'Europe'},
-                        {'label':'South America','value':'South America'},
-                        {'label':'Africa','value':'Africa'}
-                    ],
-                    value="Continent",
-                    placeholder="Country"
+                    placeholder="Filter by Continent",
                     )
-                ], className="col"),
-            html.Div([
-                dcc.Dropdown(
-                    id='dropdown-4',
-                    options=[
-                        {'label':'Asia','value':'Asia'},
-                        {'label':'Oceania','value':'Oceania'},
-                        {'label':'North America','value':'North America'},
-                        {'label':'Europe','value':'Europe'},
-                        {'label':'South America','value':'South America'},
-                        {'label':'Africa','value':'Africa'}
-                    ],
-                    value="Continent",
-                    placeholder="City"
-                    )
-                ], className="col"),
-            html.Div([
-                dcc.Dropdown(
-                    id='dropdown-5',
-                    options=[
-                        {'label':'Asia','value':'Asia'},
-                        {'label':'Oceania','value':'Oceania'},
-                        {'label':'North America','value':'North America'},
-                        {'label':'Europe','value':'Europe'},
-                        {'label':'South America','value':'South America'},
-                        {'label':'Africa','value':'Africa'}
-                    ],
-                    value="Continent",
-                    placeholder="Climate"
-                    )
-                ], className="col"),
-            html.Div([
-                dcc.Dropdown(
-                    id='dropdown-6',
-                    options=[
-                        {'label':'Asia','value':'Asia'},
-                        {'label':'Oceania','value':'Oceania'},
-                        {'label':'North America','value':'North America'},
-                        {'label':'Europe','value':'Europe'},
-                        {'label':'South America','value':'South America'},
-                        {'label':'Africa','value':'Africa'}
-                    ],
-                    value="Continent",
-                    placeholder="Rainfall"
-                    )
-                ], className="col")
-        ], className = 'row shadow p-3 mb-2 mr-2 ml-2 bg-white rounded'),
-        # div holding preferences
-        html.Div([
-            html.Div([
+                ], className="col",style = {'margin-bottom':15}),
+                
                 html.Div([
-                    html.H2(children = 'Choose your preferences')], style = {'margin-bottom':5,'margin-top':10,'margin-right':10,'margin-left':10, }),
-                    html.Div(["Choose the importance of the following factors. On the selection pan above, you can narrow down the results by region."], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10 }),
-
-                html.Div([
-                    html.H6(children = 'Safety')
+                    html.H5(children = 'Safety')
                 ], id = 'first-preference-title', className = 'col'),
 
                 html.Div([
@@ -229,12 +168,13 @@ app.layout = html.Div([
                         min = 0,
                         max = 1,
                         step = 0.1,
-                        value = .5
+                        value = .5,
+                        marks ={0:"",1:""}
                     )
                 ], id = 'first-preference', className = 'col', style = {'margin-bottom':10}),
 
                 html.Div([
-                    html.H6(children = 'Health Care')
+                    html.H5(children = 'Health Care')
                 ], id = 'second-preference-title', className = 'col'),
 
                 html.Div([
@@ -243,12 +183,13 @@ app.layout = html.Div([
                         min = 0,
                         max = 1,
                         step = 0.1,
-                        value = .5
+                        value = .5,
+                        marks ={0:"",1:""}
                     )
                 ], id = 'second-preference', className = 'col', style = {'margin-bottom':10}),
 
                 html.Div([
-                    html.H6(children = 'Cheap Living')
+                    html.H5(children = 'Cheap Living')
                 ], id = 'third-preference-title', className = 'col'),
 
                 html.Div([
@@ -257,12 +198,13 @@ app.layout = html.Div([
                         min = 0,
                         max = 1,
                         step = 0.1,
-                        value = .5
+                        value = .5,
+                        marks ={0:"",1:""}
                     )
                 ], id = 'third-preference', className = 'col', style = {'margin-bottom':10}),
 
                 html.Div([
-                    html.H6(children = 'Clean Air')
+                    html.H5(children = 'Clean Air')
                 ], id = 'fourth-preference-title', className = 'col'),
 
                 html.Div([
@@ -272,15 +214,22 @@ app.layout = html.Div([
                         max = 1,
                         step = 0.1,
                         value = .5,
+                        marks={
+                                0:{'label': 'not important', "style":{"margin-left":21}},
+                                1: {'label': 'important'},
+                            }
                     )
-                ], id = 'fourth-preference', className = 'col',  style = {'margin-bottom':10}),
+                ], id = 'fourth-preference', className = 'col', style = {'margin-bottom':10}),
 
-                html.Button('Show All', id='show-all'),
+
+                html.Div([html.Button('Show All', id='show-all')], style={"display":"None"}),
             ], id = 'preferences-div', className = 'col-3 shadow p-4 mr-4 mb-5 bg-white rounded'),
             html.Div([
-                html.Div([html.Div([html.H5("Your city is")],),html.Div([html.H5("Vienna")])], className = 'shadow mb-3 p-4 bg-white rounded'),
-                html.Div([html.Div([html.H5("Average Temperature")]),html.Div([html.H5("20°C")],)], className = 'shadow mb-3 p-4 bg-white rounded'),
-                html.Div([html.Div([html.H5("Rainy days per year")]),html.Div([html.H5("16")],)], className = 'shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Your city is")],),html.Div([html.H4("...")],id="box-city", style={"font-size":25, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Average Temperature")]),html.Div([html.H4("...")], id="box-temp", style={"font-size":30, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Rainy days per year")]),html.Div([html.H4("...")], id="box-rain", style={"font-size":30, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Sunny hours per day")]),html.Div([html.H4("...")], id="box-sun", style={"font-size":30, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+
             ],className="col mr-2"),
 
             # map div
@@ -346,10 +295,9 @@ def cleardrop(clicks):
      Input('slider-health', 'value'),
      Input('slider-costs', 'value'),
      Input('slider-pollution', 'value'),
-     Input('show-all', 'n_clicks'),
      Input('dropdown-continent', 'value'),
      ])
-def update_df(a,b,c,d,clicks,continent):
+def update_df(a,b,c,d,continent):
     global df
     df = df_original.copy()
     global selected
@@ -358,16 +306,10 @@ def update_df(a,b,c,d,clicks,continent):
     df_cy = df[df["Year"] == 2019]
     df_cy = df_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(df_cy.head(n=10)["City"].values)]
-    global clickCount
-    if clicks != None :
-        if (clicks > clickCount):
-            top_ten = df
-            clickCount = clicks
 
     if (continent!= None):
         top_ten = df[df["Continent"] == continent]
         df = top_ten
-
 
     return top_ten.to_json()
 
@@ -634,19 +576,96 @@ def update_dots(top_ten):
 
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    trace1 = go.Scatter(y=["Pollution Index" for i in range(0,len(top_ten_cy["Pollution Index"].values))],x=top_ten_cy["Pollution Index"], mode="markers", )
-    trace2 = go.Scatter(y=["Safety Index" for i in range(0,len(top_ten_cy["Safety Index"].values))],x=top_ten_cy["Safety Index"], mode="markers")
-    trace3 = go.Scatter(y=["Cost of Living Index" for i in range(0,len(top_ten_cy["Cost of Living Index"].values))],x=top_ten_cy["Cost of Living Index"], mode="markers")
-    trace4 = go.Scatter(y=["Health Care Index" for i in range(0,len(top_ten_cy["Health Care Index"].values))],x=top_ten_cy["Health Care Index"], mode="markers")
+    min_ind = min(top_ten_cy[["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]].min().values)
+    
+    data = []
+    
+    
+    colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)",]
+    count = 0
+    for c in top_ten_cy["City"].values:
+        y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
+        x = [top_ten_cy[top_ten_cy["City"] == c]["Pollution Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Safety Index"].values[0], top_ten_cy[top_ten_cy["City"] == c]["Cost of Living Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Health Care Index"].values[0] ]
+        trace = go.Scatter(y=y,x=x, mode="markers", text=c, name=c,marker_color=colors[count], marker=dict(size=15), hovertext=c )
+        count += 1
+        data.append(trace)
+    
 
-    data = [trace1,trace2, trace3, trace4]
-
-    layout=go.Layout(showlegend=False, title="Top cities compared", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
-            xaxis=dict(showgrid=False, zeroline=False),
-            yaxis=dict(showgrid=False, zeroline=False))
+    
+    layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
+            xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
+            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"),
+            legend=dict(itemclick="toggleothers"))
     fig_dot = go.Figure(data, layout)
+
     return fig_dot
 
+################# -- box city callback -- #############################################
+@app.callback(
+    Output('box-city', 'children'),
+    [Input("df-storage", "children")])
+def update_box_city(top_ten):
+    top_ten = pd.read_json(top_ten)
+    
+    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
+    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+
+    city = np.unique(top_one["City"].values)[0]
+    
+    return city 
+    
+################# -- box temp callback -- #############################################
+@app.callback(
+    Output('box-temp', 'children'),
+    [Input("df-storage", "children")])
+def update_box_temp(top_ten):
+    top_ten = pd.read_json(top_ten)
+    
+    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
+    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+
+    city = np.unique(top_one["City"].values)[0]
+    
+    df_tempe = pd.read_csv("data/temperature.csv")
+    top_temp = df_tempe.loc[df_tempe["real_city"] == city]
+    mean_temp = top_temp.iloc[:,1:].mean(axis=1).values[0]
+    return str(round(mean_temp,2)) + "°C"
+
+################# -- box rain callback -- #############################################
+@app.callback(
+    Output('box-rain', 'children'),
+    [Input("df-storage", "children")])
+def update_box_rain(top_ten):
+    top_ten = pd.read_json(top_ten)
+    
+    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
+    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+
+    city = np.unique(top_one["City"].values)[0]
+    
+    df_rain = pd.read_csv("data/rain.csv")
+    top_rain = df_rain.loc[df_rain["real_city"] == city]
+    sum_rain = top_rain.iloc[:,1:].sum(axis=1).values[0]
+    return str(int(sum_rain))
+
+################# -- box sun callback -- #############################################
+@app.callback(
+    Output('box-sun', 'children'),
+    [Input("df-storage", "children")])
+def update_box_sun(top_ten):
+    top_ten = pd.read_json(top_ten)
+    
+    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
+    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+
+    city = np.unique(top_one["City"].values)[0]
+    
+    df_sun = pd.read_csv("data/sun.csv")
+    top_sun = df_sun.loc[df_sun["real_city"] == city]
+    mean_sun = top_sun.iloc[:,1:].mean(axis=1).values[0]
+    hours = int(mean_sun)
+    minutes = int(60 * (mean_sun - hours))
+    return str(hours) + "h " + str(minutes) + "min"
 
 
 if __name__ == '__main__':
