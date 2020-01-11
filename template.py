@@ -8,6 +8,13 @@ from plotly.subplots import make_subplots
 import plotly.offline as pyo
 from dash.dependencies import Input, Output, State
 
+def city_only(cities):
+    newlist = []
+    for city in cities:
+        city = city.split(',')[0]
+        newlist.append(city)
+    return newlist
+
 def filtering(df,name,year=0,index=0):
     df = df[df['City'] == name]
     if year == 0:
@@ -507,28 +514,35 @@ def update_rain(top_ten,clickData):
      Input("fig-map","clickData")])
 def update_temp(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
+    top_ten = top_ten.sort_values("final_score")
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
 
     else:
         top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
-    city = np.unique(top_one["City"].values)[0]
+    cities = np.unique(top_ten_cy["City"].values)
 
-    df_tempe = pd.read_csv("data/temperature.csv")
-    top_temp = df_tempe.loc[df_tempe["real_city"] == city]
+    df_temp = pd.read_csv("data/temperature.csv")
+    df_temp = df_temp[df_temp['real_city'].isin(cities)]   
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
-    data = []
+
     x = [j for j in range(1, 13)]
-    y = top_temp[months].values[0]
-    data.append(go.Scatter(x=x,y=y ,marker=dict(symbol="circle", color="gray", size=8)))
+    y = city_only(df_temp['real_city'].values)
+    z = df_temp[months].values
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature in " + city),
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Temperature Comparison by City and Month"),
             yaxis=dict(showgrid=False, zeroline=False))
 
-    fig_temp = go.Figure(data, layout)
+    fig_temp = go.Figure(data = go.Heatmap(z = z, #temperature values
+                                           x = x, #numbers from 1 to 12 which we then label as months
+                                           y = y,
+                                           colorscale = 'YlOrRd'),
+                         layout = layout)
     return fig_temp
 
 
@@ -542,19 +556,19 @@ def update_stackbar(top_ten):
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
 
-    trace1 = go.Bar(y = top_ten_cy['City'],
+    trace1 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Safety Index'],
                     name = 'Safety',
                     orientation = 'h')
-    trace2 = go.Bar(y = top_ten_cy['City'],
+    trace2 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Health Care Index'],
                     name = 'Health',
                     orientation = 'h')
-    trace3 = go.Bar(y = top_ten_cy['City'],
+    trace3 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Cost of Living Index'],
                     name = 'Cost of Living',
                     orientation = 'h')
-    trace4 = go.Bar(y = top_ten_cy['City'],
+    trace4 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Pollution Index'],
                     name = 'Pollution',
                     orientation = 'h')
