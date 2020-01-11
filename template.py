@@ -551,16 +551,23 @@ def update_temp(top_ten,clickData):
     x = [j for j in range(1, 13)]
     y = city_only(df_temp['real_city'].values)
     z = df_temp[months].values
+    
+    
+    annotations = go.Annotations()
+    for n, row in enumerate(z):
+        for m, val in enumerate(row):
+            annotations.append(go.Annotation(text=str(z[n][m]), x=x[m], y=y[n], font=dict(color = 'white'),
+                                         xref='x1', yref='y1', showarrow=False))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature by City and Month"),
             yaxis=dict(showgrid=False, zeroline=False))
 
-    fig_temp = go.Figure(data = go.Heatmap(z = z, #temperature values
-                                           x = x, #numbers from 1 to 12 which we then label as months
-                                           y = y,
-                                           colorscale = 'YlOrRd'),
+    fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu', 
+                                           reversescale=True, colorbar=dict(thickness = 10, xpad = 0, ypad = 0),
+                                           zmid = 5),
                          layout = layout)
+    # fig_temp.update_layout(annotations = annotations) # uncomment this in case we want to show annotations on the heatmap
     return fig_temp
 
 
