@@ -449,6 +449,9 @@ def update_bars(top_ten,clickData):
      Input("fig-map","clickData")])
 def update_sun(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
+    top_ten = top_ten.sort_values("final_score")
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
@@ -456,21 +459,27 @@ def update_sun(top_ten,clickData):
     else:
         top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
 
-    city = np.unique(top_one["City"].values)[0]
-
+    cities = np.unique(top_ten_cy["City"].values)
     df_sun = pd.read_csv("data/sun.csv")
-    top_sun = df_sun.loc[df_sun["real_city"] == city]
+    df_sun = df_sun[df_sun["real_city"].isin(cities)]
+    
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
-    for i in range(1,len(months) + 1):
-        x = [i for j in range(0, top_sun[months[i-1]].values[0])]
-        y = [j + 0.5 + j*0.03 for j in range(0, top_sun[months[i-1]].values[0])]
-        data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol=18, color="yellow", size=11), hoverinfo="none"))
-        data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="yellow", size=10), hoverinfo="none"))
+    y = city_only(df_sun['real_city'].values)
+    
+    for i in range(1,len(months) + 1): 
+        x = [i for j in range(1,len(df_sun['real_city'].values) + 1)]
+        size = df_sun[months[i-1]] #scaling the scatter dots
+
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol=18, color="#FFAE00", size=size*1.5), hoverinfo="none"))
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#FFAE00", size=size, 
+                                                                       line=dict(width=1,color='#FFAE00')), hoverinfo="none"))
+    
+
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Sunny hours per day in " + city),
-            yaxis=dict(showgrid=False, zeroline=False, range=[0,18]))
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Daily Sun Hours by City and Month"),
+            yaxis=dict(showgrid=False, zeroline=False))
 
     fig_sun = go.Figure(data, layout)
     return fig_sun
@@ -482,27 +491,34 @@ def update_sun(top_ten,clickData):
      Input("fig-map","clickData")])
 def update_rain(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
+    top_ten = top_ten.sort_values("final_score")
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
 
     else:
         top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
-    city = np.unique(top_one["City"].values)[0]
 
+    cities = np.unique(top_ten_cy["City"].values)
+    
     df_rain = pd.read_csv("data/rain.csv")
-    top_rain = df_rain.loc[df_rain["real_city"] == city]
+    df_rain = df_rain[df_rain["real_city"].isin(cities)]
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
-    for i in range(1,len(months) + 1):
-        x = [i for j in range(0, top_rain[months[i-1]].values[0])]
-        y = [j + 0.5 + j*0.03 for j in range(0, top_rain[months[i-1]].values[0])]
-        data.append(go.Scatter(x=x,y=y,mode="markers", marker=dict(symbol="circle", color="blue", size=11), hoverinfo="none"))
+    y = city_only(df_rain['real_city'].values)
+    
+    for i in range(1,len(months) + 1): 
+        x = [i for j in range(1,len(df_rain['real_city'].values) + 1)]
+        size = df_rain[months[i-1]]
+
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="rgb(0,0,255)", size=size), hoverinfo="none"))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy days in " + city),
-            yaxis=dict(showgrid=False, zeroline=False, range=[0,30]))
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy Days by City and Month"),
+            yaxis=dict(showgrid=False, zeroline=False))
 
     fig_rain = go.Figure(data, layout)
     return fig_rain
@@ -523,10 +539,12 @@ def update_temp(top_ten,clickData):
 
     else:
         top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
+        
     cities = np.unique(top_ten_cy["City"].values)
 
     df_temp = pd.read_csv("data/temperature.csv")
     df_temp = df_temp[df_temp['real_city'].isin(cities)]   
+
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
@@ -535,7 +553,7 @@ def update_temp(top_ten,clickData):
     z = df_temp[months].values
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
-            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Temperature Comparison by City and Month"),
+            xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature by City and Month"),
             yaxis=dict(showgrid=False, zeroline=False))
 
     fig_temp = go.Figure(data = go.Heatmap(z = z, #temperature values
