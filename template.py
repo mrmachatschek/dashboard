@@ -164,7 +164,7 @@ app.layout = html.Div([
                     placeholder="Filter by Continent",
                     )
                 ], className="col",style = {'margin-bottom':15}),
-                
+
                 html.Div([
                     html.H5(children = 'Safety')
                 ], id = 'first-preference-title', className = 'col'),
@@ -245,17 +245,17 @@ app.layout = html.Div([
                         figure = fig_map)
             ], id = 'map-div', className = 'col-7 shadow mb-5 bg-white rounded'),
         ], id = 'second-main-row', className = 'row ml-2 mr-2'),
-        
+
         html.Div([
-            dcc.Graph(id = 'fig-lines',figure = fig_lines) 
+            dcc.Graph(id = 'fig-lines',figure = fig_lines,style={'width': '100%'})
         ],className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
-        
+
         html.Div([
             html.Div([
                 dcc.Graph(id = 'stacked-graph', figure = fig_stacked)
             ], className = 'col-4 shadow p-4 mb-4 mr-4 bg-white rounded', id = 'stacked-bar-div'),
             html.Div([
-                dcc.Graph(id = 'dots-graph')  
+                dcc.Graph(id = 'dots-graph')
             ], className="col  shadow p-4 mb-4 bg-white rounded")
         ], id = 'chart-div', className = 'row ml-2 mr-2'),
 
@@ -451,7 +451,7 @@ def update_sun(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    
+
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
@@ -462,19 +462,19 @@ def update_sun(top_ten,clickData):
     cities = np.unique(top_ten_cy["City"].values)
     df_sun = pd.read_csv("data/sun.csv")
     df_sun = df_sun[df_sun["real_city"].isin(cities)]
-    
+
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
     y = city_only(df_sun['real_city'].values)
-    
-    for i in range(1,len(months) + 1): 
+
+    for i in range(1,len(months) + 1):
         x = [i for j in range(1,len(df_sun['real_city'].values) + 1)]
         size = df_sun[months[i-1]] #scaling the scatter dots
 
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol=18, color="#FFAE00", size=size*1.5), hoverinfo="none"))
-        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#FFAE00", size=size, 
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#FFAE00", size=size,
                                                                        line=dict(width=1,color='#FFAE00')), hoverinfo="none"))
-    
+
 
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
@@ -493,7 +493,7 @@ def update_rain(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    
+
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
@@ -502,15 +502,15 @@ def update_rain(top_ten,clickData):
         top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
 
     cities = np.unique(top_ten_cy["City"].values)
-    
+
     df_rain = pd.read_csv("data/rain.csv")
     df_rain = df_rain[df_rain["real_city"].isin(cities)]
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
     y = city_only(df_rain['real_city'].values)
-    
-    for i in range(1,len(months) + 1): 
+
+    for i in range(1,len(months) + 1):
         x = [i for j in range(1,len(df_rain['real_city'].values) + 1)]
         size = df_rain[months[i-1]]
 
@@ -532,18 +532,18 @@ def update_temp(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    
+
     if clickData != None:
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
 
     else:
         top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
-        
+
     cities = np.unique(top_ten_cy["City"].values)
 
     df_temp = pd.read_csv("data/temperature.csv")
-    df_temp = df_temp[df_temp['real_city'].isin(cities)]   
+    df_temp = df_temp[df_temp['real_city'].isin(cities)]
 
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -551,8 +551,8 @@ def update_temp(top_ten,clickData):
     x = [j for j in range(1, 13)]
     y = city_only(df_temp['real_city'].values)
     z = df_temp[months].values
-    
-    
+
+
     annotations = go.Annotations()
     for n, row in enumerate(z):
         for m, val in enumerate(row):
@@ -563,7 +563,7 @@ def update_temp(top_ten,clickData):
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature by City and Month"),
             yaxis=dict(showgrid=False, zeroline=False))
 
-    fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu', 
+    fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu',
                                            reversescale=True, colorbar=dict(thickness = 10, xpad = 0, ypad = 0),
                                            zmid = 5),
                          layout = layout)
@@ -616,10 +616,10 @@ def update_dots(top_ten):
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     min_ind = min(top_ten_cy[["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]].min().values)
-    
+
     data = []
-    
-    
+
+
     colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)",]
     count = 0
     for c in top_ten_cy["City"].values:
@@ -628,9 +628,9 @@ def update_dots(top_ten):
         trace = go.Scatter(y=y,x=x, mode="markers", text=c, name=c,marker_color=colors[count], marker=dict(size=15), hovertext=c )
         count += 1
         data.append(trace)
-    
 
-    
+
+
     layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
             yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"),
@@ -645,26 +645,26 @@ def update_dots(top_ten):
     [Input("df-storage", "children")])
 def update_box_city(top_ten):
     top_ten = pd.read_json(top_ten)
-    
+
     top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
-    
-    return city 
-    
+
+    return city
+
 ################# -- box temp callback -- #############################################
 @app.callback(
     Output('box-temp', 'children'),
     [Input("df-storage", "children")])
 def update_box_temp(top_ten):
     top_ten = pd.read_json(top_ten)
-    
+
     top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
-    
+
     df_tempe = pd.read_csv("data/temperature.csv")
     top_temp = df_tempe.loc[df_tempe["real_city"] == city]
     mean_temp = top_temp.iloc[:,1:].mean(axis=1).values[0]
@@ -676,12 +676,12 @@ def update_box_temp(top_ten):
     [Input("df-storage", "children")])
 def update_box_rain(top_ten):
     top_ten = pd.read_json(top_ten)
-    
+
     top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
-    
+
     df_rain = pd.read_csv("data/rain.csv")
     top_rain = df_rain.loc[df_rain["real_city"] == city]
     sum_rain = top_rain.iloc[:,1:].sum(axis=1).values[0]
@@ -693,12 +693,12 @@ def update_box_rain(top_ten):
     [Input("df-storage", "children")])
 def update_box_sun(top_ten):
     top_ten = pd.read_json(top_ten)
-    
+
     top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
-    
+
     df_sun = pd.read_csv("data/sun.csv")
     top_sun = df_sun.loc[df_sun["real_city"] == city]
     mean_sun = top_sun.iloc[:,1:].mean(axis=1).values[0]
