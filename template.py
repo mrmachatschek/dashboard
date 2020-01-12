@@ -62,7 +62,7 @@ fig_map = go.Figure(data=go.Scattergeo(
         lat = df_coord['lat'],
         text = df_coord.index.values,
         mode = 'markers',
-        marker_color = "blue",
+        marker_color = "#0091D5",
         marker_size = 7
         ))
 
@@ -71,7 +71,7 @@ fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
                         geo=dict(
                             showland = True,
                             scope = "world", # can be updated when continent is
-                            landcolor = "rgb(212, 212, 212)",
+                            landcolor = "#DADADA",
                             subunitcolor = "rgb(255, 255, 255)",
                             coastlinecolor = "rgb(255, 255, 255)",
                             countrycolor = "rgb(255, 255, 255)",
@@ -128,8 +128,7 @@ app = dash.Dash(__name__, external_stylesheets=external_ss)
 
 app.title = 'Find Your Paradise'
 
-# Bootstrap CSS
-# app.css.append_css({'external_url': 'https://codepen.io/amyoshino/pen/jzXypZ.css'})
+
 
 app.layout = html.Div([
 
@@ -343,7 +342,7 @@ def update_map(top_ten):
             #autocolorscale = False,
             #colorscale = 'RdBu',
             #cmin = df["final_score"].min(),
-            color = "blue", #coord_tf["final_score"]
+            color = "#0091D5", #coord_tf["final_score"]
             #cmax = coord_tf['final_score'].max(),
             #colorbar_title="Weighted Score"
         )))
@@ -353,7 +352,7 @@ def update_map(top_ten):
                         geo=dict(
                             showland = True,
                             scope = "world", # can be updated when continent is
-                            landcolor = "rgb(212, 212, 212)",
+                            landcolor = "#DADADA",
                             subunitcolor = "rgb(255, 255, 255)",
                             coastlinecolor = "rgb(255, 255, 255)",
                             countrycolor = "rgb(255, 255, 255)",
@@ -402,7 +401,7 @@ def update_bars(top_ten,clickData):
             y = y_poll,
             name = city,
             showlegend = False,
-            marker_color = colors[color_city]
+            marker_color = 'rgb(118,0,29)' #use this for negative change
         ),
         row=1, col=1
     )
@@ -412,7 +411,7 @@ def update_bars(top_ten,clickData):
             y=y_safe,
             name=city,
             showlegend=False,
-            marker_color = colors[color_city]
+            marker_color = 'rgb(118,0,29)'
         ),
         row=1, col=4
     )
@@ -422,7 +421,7 @@ def update_bars(top_ten,clickData):
             y=y_heal,
             name=city,
             showlegend=False,
-            marker_color = colors[color_city]
+            marker_color = '#0091d5' # use this for positive change
         ),
         row=1, col=3
     )
@@ -431,7 +430,7 @@ def update_bars(top_ten,clickData):
             x=year,
             y=y_cost,
             name=city,
-            marker_color = colors[color_city]
+            marker_color = '#0091d5'
         ),
         row=1, col=2
     )
@@ -514,7 +513,7 @@ def update_rain(top_ten,clickData):
         x = [i for j in range(1,len(df_rain['real_city'].values) + 1)]
         size = df_rain[months[i-1]]
 
-        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="rgb(0,0,255)", size=size), hoverinfo="none"))
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size), hoverinfo="none"))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy Days by City and Month"),
@@ -584,19 +583,23 @@ def update_stackbar(top_ten):
     trace1 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Safety Index'],
                     name = 'Safety',
-                    orientation = 'h')
+                    orientation = 'h',
+                    marker_color = '#001126')
     trace2 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Health Care Index'],
                     name = 'Health',
-                    orientation = 'h')
+                    orientation = 'h',
+                    marker_color = '#16536e')
     trace3 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Cost of Living Index'],
                     name = 'Cost of Living',
-                    orientation = 'h')
+                    orientation = 'h',
+                    marker_color = '#489eba')
     trace4 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Pollution Index'],
                     name = 'Pollution',
-                    orientation = 'h')
+                    orientation = 'h',
+                    marker_color = '#b3c9d9')
 
     data = [trace1, trace2, trace3, trace4]
 
@@ -619,8 +622,13 @@ def update_dots(top_ten):
 
     data = []
 
-
+    #initial colors by Michael
     colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)",]
+    
+    #updated color scheme
+    #colors = ['#494ca2','#8186d5','#c6cbef','#85cfcb','#219897','#ac3e31','#3282b8','#0f4c75','#bbe1fa','#b3c100','#000000']
+
+    
     count = 0
     for c in top_ten_cy["City"].values:
         y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
