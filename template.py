@@ -389,11 +389,43 @@ def update_bars(top_ten,clickData):
 
     color_city = 0
 
+    year = top_one["Year"].copy()
+    year.sort_values(inplace=True)
+
+    top_one["Pollution Change"] = 0
+    top_one["Safety Change"] = 0
+    top_one["Health Care Change"] = 0
+    top_one["Cost of Living Change"] = 0
+
+    prev = 0
+    for i in year:
+        if prev != 0:
+            top_one.loc[top_one["Year"] == i,"Pollution Change"] = (((
+                top_one.loc[top_one["Year"] == i].iloc[0]["Pollution Index"] -
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Pollution Index"])*100)/
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Pollution Index"])
+
+            top_one.loc[top_one["Year"] == i,"Safety Change"] = (((
+                top_one.loc[top_one["Year"] == i].iloc[0]["Safety Index"] -
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Safety Index"])*100)/
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Safety Index"])
+
+            top_one.loc[top_one["Year"] == i,"Health Care Change"] = (((
+                top_one.loc[top_one["Year"] == i].iloc[0]["Health Care Index"] -
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Health Care Index"])*100)/
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Health Care Index"])
+
+            top_one.loc[top_one["Year"] == i,"Cost of Living Change"] = (((
+                top_one.loc[top_one["Year"] == i].iloc[0]["Cost of Living Index"] -
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Cost of Living Index"])*100)/
+                top_one.loc[top_one["Year"] == prev].iloc[0]["Cost of Living Index"])
+        prev = i
+
+    y_poll = top_one["Pollution Change"]
+    y_safe = top_one["Safety Change"]
+    y_heal = top_one["Health Care Change"]
+    y_cost = top_one["Cost of Living Change"]
     year = top_one["Year"]
-    y_poll = top_one["Pollution Index"]
-    y_safe = top_one["Safety Index"]
-    y_heal = top_one["Health Care Index"]
-    y_cost = top_one["Cost of Living Index"]
 
     fig_lines.add_trace(
         go.Bar(
@@ -624,11 +656,11 @@ def update_dots(top_ten):
 
     #initial colors by Michael
     colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)",]
-    
+
     #updated color scheme
     #colors = ['#494ca2','#8186d5','#c6cbef','#85cfcb','#219897','#ac3e31','#3282b8','#0f4c75','#bbe1fa','#b3c100','#000000']
 
-    
+
     count = 0
     for c in top_ten_cy["City"].values:
         y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
