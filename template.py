@@ -146,7 +146,7 @@ app.layout = html.Div([
             html.Div([
                 html.Div([
                     html.H2(children = 'Choose your preferences')], style = {'margin-bottom':5,'margin-top':10,'margin-right':10,'margin-left':10, }),
-                    html.Div(["Choose the importance of the following factors. You can also filter the results by continent."], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10 }),
+                    html.Div(["Choose the importance of the following factors. You can limit results to a certain continent."], style = {'margin-bottom':10,'margin-top':10,'margin-right':10,'margin-left':10 }),
 
                 html.Div([
                     dcc.Dropdown(
