@@ -331,11 +331,14 @@ def update_df(a,b,c,d,continent):
 def update_map(top_ten):
     global df
     top_ten = pd.read_json(top_ten)
-
+    top_ten = top_ten.sort_values("final_score", ascending=False)
+    top_ten["place"] = 7
+    city = top_ten.head(1).iloc[0]["City"]
+    print(city)
+    top_ten.loc[top_ten["City"]==city,"place"] = 2
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
 
     coord_tf = pd.merge(coord_tf, top_ten, how='right',left_on="City", right_on="City")
-
 
     fig_map = go.Figure(data=go.Scattergeo(
         lon = coord_tf['lng'],
@@ -344,12 +347,12 @@ def update_map(top_ten):
         mode = 'markers',
         marker = dict(
             size = 7,
-            #autocolorscale = False,
-            #colorscale = 'RdBu',
-            #cmin = df["final_score"].min(),
-            color = "#0091D5", #coord_tf["final_score"]
-            #cmax = coord_tf['final_score'].max(),
-            #colorbar_title="Weighted Score"
+            autocolorscale =False,
+            colorscale = 'Rainbow',
+            cmin = 0,
+            color = coord_tf['place'], #coord_tf["final_score"]
+            cmax = 8,
+
         )))
 
     fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
@@ -380,7 +383,6 @@ def update_map(top_ten):
 def update_bars(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
     if clickData != None:
-        print(clickData["points"][0]["text"])
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
 
