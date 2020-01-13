@@ -621,10 +621,10 @@ def update_stackbar(top_ten):
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     max = top_ten_cy.head(1).iloc[0]["final_score"]
     top_ten_cy = top_ten_cy.sort_values("final_score")
-    top_ten_cy['Safety Index - 1'] = ((top_ten_cy['Safety Index'] * top_ten_cy['saf']) / max)*100
-    top_ten_cy['Health Care Index - 1'] = ((top_ten_cy['Health Care Index'] * top_ten_cy['hea']) / max)*100
-    top_ten_cy['Cost of Living Index - 1'] = ((top_ten_cy['Cost of Living Index'] * top_ten_cy['cos']) / max)*100
-    top_ten_cy['Pollution Index - 1'] = ((top_ten_cy['Pollution Index'] * top_ten_cy['pol']/ max))*100
+    top_ten_cy['Safety Index - 1'] = ((top_ten_cy['Safety Index'] * top_ten_cy['saf']) / top_ten_cy['final_score'])*100
+    top_ten_cy['Health Care Index - 1'] = ((top_ten_cy['Health Care Index'] * top_ten_cy['hea']) / top_ten_cy['final_score'])*100
+    top_ten_cy['Cost of Living Index - 1'] = ((top_ten_cy['Cost of Living Index'] * top_ten_cy['cos']) / top_ten_cy['final_score'])*100
+    top_ten_cy['Pollution Index - 1'] = ((top_ten_cy['Pollution Index'] * top_ten_cy['pol']/ top_ten_cy['final_score']))*100
     trace1 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Safety Index - 1'],
                     name = 'Safety',
@@ -687,7 +687,7 @@ def update_dots(top_ten):
     layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
             yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"))
-           
+
     fig_dot = go.Figure(data, layout)
 
     return fig_dot
