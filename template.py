@@ -429,6 +429,10 @@ def update_bars(top_ten,clickData):
                 top_one.loc[top_one["Year"] == prev].iloc[0]["Cost of Living Index"])
         prev = i
 
+    top_one["pol_color"] = top_one.apply(lambda x: '#0091d5' if x["Pollution Change"] > 0 else 'rgb(118,0,29)',axis=1)
+    top_one["hea_color"] = top_one.apply(lambda x: '#0091d5' if x["Health Care Change"] > 0 else 'rgb(118,0,29)',axis=1)
+    top_one["saf_color"] = top_one.apply(lambda x: '#0091d5' if x["Safety Change"] > 0 else 'rgb(118,0,29)',axis=1)
+    top_one["cos_color"] = top_one.apply(lambda x: '#0091d5' if x["Cost of Living Change"] > 0 else 'rgb(118,0,29)',axis=1)
     y_poll = top_one["Pollution Change"]
     y_safe = top_one["Safety Change"]
     y_heal = top_one["Health Care Change"]
@@ -441,7 +445,7 @@ def update_bars(top_ten,clickData):
             y = y_poll,
             name = city,
             showlegend = False,
-            marker_color = 'rgb(118,0,29)' #use this for negative change
+            marker_color = top_one["pol_color"] #use this for negative change
         ),
         row=1, col=1
     )
@@ -451,7 +455,7 @@ def update_bars(top_ten,clickData):
             y=y_safe,
             name=city,
             showlegend=False,
-            marker_color = 'rgb(118,0,29)'
+            marker_color = top_one["saf_color"]
         ),
         row=1, col=4
     )
@@ -461,7 +465,7 @@ def update_bars(top_ten,clickData):
             y=y_heal,
             name=city,
             showlegend=False,
-            marker_color = '#0091d5' # use this for positive change
+            marker_color = top_one["hea_color"] # use this for positive change
         ),
         row=1, col=3
     )
@@ -470,10 +474,11 @@ def update_bars(top_ten,clickData):
             x=year,
             y=y_cost,
             name=city,
-            marker_color = '#0091d5'
+            marker_color = top_one["cos_color"]
         ),
         row=1, col=2
     )
+    fig_lines.update_yaxes(range=[-10, 10])
     fig_lines.update_layout(plot_bgcolor="white",
                             margin=dict(t=110,b=15,r=15,l=15),
                             title=dict(text="Indicators of " + city, y=0.98, x=0.5, xanchor="center", yanchor="top"),
