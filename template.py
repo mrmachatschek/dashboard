@@ -309,6 +309,11 @@ def update_df(a,b,c,d,continent):
     global selected
     selected = continent
     df["final_score"] = a * df["Safety Index"] + b * df["Health Care Index"] + c * df["Cost of Living Index"] + d * df["Pollution Index"]
+    df["saf"] = a
+    df["hea"] = b
+    df["cos"] = c
+    df["pol"] = d
+
     df_cy = df[df["Year"] == 2019]
     df_cy = df_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(df_cy.head(n=10)["City"].values)]
@@ -329,13 +334,13 @@ def update_map(top_ten):
 
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
 
-    coord_tf = pd.merge(coord_tf, top_ten, how='left',left_on="City", right_on="City")
+    coord_tf = pd.merge(coord_tf, top_ten, how='right',left_on="City", right_on="City")
 
 
     fig_map = go.Figure(data=go.Scattergeo(
         lon = coord_tf['lng'],
         lat = coord_tf['lat'],
-        text = coord_tf.index,
+        text = coord_tf['City'],
         mode = 'markers',
         marker = dict(
             size = 7,
@@ -375,6 +380,7 @@ def update_map(top_ten):
 def update_bars(top_ten,clickData):
     top_ten = pd.read_json(top_ten)
     if clickData != None:
+        print(clickData["points"][0]["text"])
         top_one = df[df["City"] == clickData["points"][0]["text"]]
         top_one = top_one.sort_values("Year")
 
@@ -609,26 +615,31 @@ def update_temp(top_ten,clickData):
 def update_stackbar(top_ten):
     top_ten = pd.read_json(top_ten)
 
-    top_ten = top_ten.sort_values("final_score")
+    top_ten = top_ten.sort_values("final_score",ascending=False)
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-
+    max = top_ten_cy.head(1).iloc[0]["final_score"]
+    top_ten_cy = top_ten_cy.sort_values("final_score")
+    top_ten_cy['Safety Index - 1'] = ((top_ten_cy['Safety Index'] * top_ten_cy['saf']) / max)*100
+    top_ten_cy['Health Care Index - 1'] = ((top_ten_cy['Health Care Index'] * top_ten_cy['hea']) / max)*100
+    top_ten_cy['Cost of Living Index - 1'] = ((top_ten_cy['Cost of Living Index'] * top_ten_cy['cos']) / max)*100
+    top_ten_cy['Pollution Index - 1'] = ((top_ten_cy['Pollution Index'] * top_ten_cy['pol']/ max))*100
     trace1 = go.Bar(y = city_only(top_ten_cy['City']),
-                    x = top_ten_cy['Safety Index'],
+                    x = top_ten_cy['Safety Index - 1'],
                     name = 'Safety',
                     orientation = 'h',
                     marker_color = '#001126')
     trace2 = go.Bar(y = city_only(top_ten_cy['City']),
-                    x = top_ten_cy['Health Care Index'],
+                    x = top_ten_cy['Health Care Index - 1'],
                     name = 'Health',
                     orientation = 'h',
                     marker_color = '#16536e')
     trace3 = go.Bar(y = city_only(top_ten_cy['City']),
-                    x = top_ten_cy['Cost of Living Index'],
+                    x = top_ten_cy['Cost of Living Index - 1'],
                     name = 'Cost of Living',
                     orientation = 'h',
                     marker_color = '#489eba')
     trace4 = go.Bar(y = city_only(top_ten_cy['City']),
-                    x = top_ten_cy['Pollution Index'],
+                    x = top_ten_cy['Pollution Index - 1'],
                     name = 'Pollution',
                     orientation = 'h',
                     marker_color = '#b3c9d9')
@@ -655,7 +666,7 @@ def update_dots(top_ten):
     data = []
 
     #initial colors by Michael
-    colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)",]
+    colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)"]
 
     #updated color scheme
     #colors = ['#494ca2','#8186d5','#c6cbef','#85cfcb','#219897','#ac3e31','#3282b8','#0f4c75','#bbe1fa','#b3c100','#000000']
@@ -665,7 +676,7 @@ def update_dots(top_ten):
     for c in top_ten_cy["City"].values:
         y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
         x = [top_ten_cy[top_ten_cy["City"] == c]["Pollution Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Safety Index"].values[0], top_ten_cy[top_ten_cy["City"] == c]["Cost of Living Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Health Care Index"].values[0] ]
-        trace = go.Scatter(y=y,x=x, mode="markers", text=c, name=c,marker_color=colors[count], marker=dict(size=15), hovertext=c )
+        trace = go.Scatter(y=y,x=x, mode="markers", text=c, name=c,marker_color=colors[count%len(colors)], marker=dict(size=15), hovertext=c )
         count += 1
         data.append(trace)
 
