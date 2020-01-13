@@ -320,7 +320,9 @@ def update_df(a,b,c,d,continent):
 
     if (continent!= None):
         top_ten = df[df["Continent"] == continent]
-        df = top_ten
+        top_ten_cy = top_ten[top_ten["Year"] == 2019]
+        top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
+        top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
 
     return top_ten.to_json()
 
