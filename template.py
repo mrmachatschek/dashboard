@@ -686,8 +686,8 @@ def update_dots(top_ten):
 
     layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
-            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"),
-            legend=dict(itemclick="toggleothers"))
+            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"))
+           
     fig_dot = go.Figure(data, layout)
 
     return fig_dot
