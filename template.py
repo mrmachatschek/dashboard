@@ -336,9 +336,9 @@ def update_map(top_ten):
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
-
     top_ten["place"] = 7
-    city = top_ten.head(1).iloc[0]["City"]
+    top_ten.sort_values("final_score", ascending=False, inplace=True)
+    city = top_ten[top_ten["Year"] == 2019].head(1).iloc[0]["City"]
     print(city)
     top_ten.loc[top_ten["City"]==city,"place"] = 2
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
@@ -386,12 +386,14 @@ def update_map(top_ten):
     [Input("df-storage", "children")])
 def update_bars(top_ten):
     top_ten = pd.read_json(top_ten)
-    
+
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
-    top_one_city = top_ten.head(n=1)["City"]
+    top_ten.sort_values("final_score", ascending=False, inplace=True)
+
+    top_one_city = top_ten[top_ten["Year"] == 2019].head(n=1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
@@ -577,7 +579,7 @@ def update_temp(top_ten):
 
     df_temp = pd.read_csv("data/temperature.csv")
     df_temp = df_temp[df_temp['real_city'].isin(cities)]
-    
+
     reindex_order = [df_temp[df_temp["real_city"] == city].index.values[0] for city in cities]
     df_temp = df_temp.reindex(list(reversed(reindex_order)))
 
@@ -613,7 +615,7 @@ def update_stackbar(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=True)
 
     top_ten_cy['Safety Index - 1'] = ((top_ten_cy['Safety Index'] * top_ten_cy['saf']) / top_ten_cy['final_score'])*100
     top_ten_cy['Health Care Index - 1'] = ((top_ten_cy['Health Care Index'] * top_ten_cy['hea']) / top_ten_cy['final_score'])*100
@@ -658,7 +660,7 @@ def update_dots(top_ten):
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
-    
+
     min_ind = min(top_ten_cy[["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]].min().values)
 
     data = []
@@ -695,7 +697,8 @@ def update_box_city(top_ten):
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
 
-    top_one_city = top_ten.head(n=1)["City"]
+    top_ten.sort_values("final_score", ascending=False, inplace=True)
+    top_one_city = top_ten[top_ten["Year"] == 2019].head(1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
@@ -726,8 +729,8 @@ def update_box_temp(top_ten):
 def update_box_rain(top_ten):
     top_ten = pd.read_json(top_ten)
 
-    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
-    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+    top_ten.sort_values("final_score", ascending=False, inplace=True)
+    top_one = top_ten[top_ten["Year"] == 2019].head(1)
 
     city = np.unique(top_one["City"].values)[0]
 
@@ -743,8 +746,8 @@ def update_box_rain(top_ten):
 def update_box_sun(top_ten):
     top_ten = pd.read_json(top_ten)
 
-    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
-    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+    top_ten.sort_values("final_score", ascending=False, inplace=True)
+    top_one = top_ten[top_ten["Year"] == 2019].head(1)
 
     city = np.unique(top_one["City"].values)[0]
 
