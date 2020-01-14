@@ -487,7 +487,7 @@ def update_bars(top_ten):
     fig_lines.update_yaxes(range=[-10, 10])
     fig_lines.update_layout(plot_bgcolor="white",
                             margin=dict(t=110,b=15,r=15,l=15),
-                            title=dict(text="Indicators of " + city, y=0.98, x=0.5, xanchor="center", yanchor="top"),
+                            title=dict(text=city + ": Indicator Development over Time", y=0.98, x=0.5, xanchor="center", yanchor="top"),
                             showlegend=False,
                             )
     return fig_lines
@@ -556,11 +556,19 @@ def update_rain(top_ten):
         x = [i for j in range(1,len(df_rain['real_city'].values) + 1)]
         size = df_rain[months[i-1]]
 
-        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size), hoverinfo="none"))
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size), 
+                               hovertemplate = 'City: %{y}'+'<br>Month: %{x}<br>'+'%{text}'+'<extra></extra>',
+                               text = 'Rainy days: {}'.format(size)))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy Days by City and Month"),
-            yaxis=dict(showgrid=False, zeroline=False))
+            yaxis=dict(showgrid=False, zeroline=False),
+            margin_t=80, #increase the bottom margin to have space for caption
+            annotations = [dict(xref='paper',
+                                yref='paper',
+                                x=-0.165, y=1.075,
+                                showarrow=False,
+                                text ='This graph shows the average number of rainy days for each, for each city. ')])
 
     fig_rain = go.Figure(data, layout)
     return fig_rain
@@ -589,15 +597,21 @@ def update_temp(top_ten):
     y = city_only(df_temp['real_city'].values)
     z = df_temp[months].values
 
-    annotations = go.Annotations()
-    for n, row in enumerate(z):
-        for m, val in enumerate(row):
-            annotations.append(go.Annotation(text=str(z[n][m]), x=x[m], y=y[n], font=dict(color = 'white'),
-                                         xref='x1', yref='y1', showarrow=False))
+ #   annotations = go.Annotations()
+ # for n, row in enumerate(z):
+ #       for m, val in enumerate(row):
+ #           annotations.append(go.Annotation(text=str(z[n][m]), x=x[m], y=y[n], font=dict(color = 'white'),
+ #                                        xref='x1', yref='y1', showarrow=False))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature by City and Month"),
-            yaxis=dict(showgrid=False, zeroline=False))
+            yaxis=dict(showgrid=False, zeroline=False),
+            margin_t=80, #increase the bottom margin to have space for caption
+            annotations = [dict(xref='paper',
+                                yref='paper',
+                                x=-0.165, y=1.075,
+                                showarrow=False,
+                                text ='This graph shows the average temperatures per month, for each city. ')])
 
     fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu',
                                            reversescale=True, colorbar=dict(thickness = 10, xpad = 0, ypad = 0),
@@ -647,7 +661,15 @@ def update_stackbar(top_ten):
 
     layout=go.Layout(showlegend=False, title="Top cities compared", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
             xaxis=dict(showgrid=False, zeroline=False),
-            yaxis=dict(showgrid=False, zeroline=False))
+            yaxis=dict(showgrid=False, zeroline=False),
+            margin_t=80, #increase the bottom margin to have space for caption
+            annotations = [dict(xref='paper',
+                                yref='paper',
+                                x=-0.115, y=1.075,
+                                showarrow=False,
+                                align = 'left',
+                                text ='Shows to which extend each indicator contributes to the overall index score.')])
+
     fig_stacked = go.Figure(data, layout)
     return fig_stacked
 
@@ -681,7 +703,14 @@ def update_dots(top_ten):
 
     layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
-            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"))
+            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"),
+            margin_t=80, #increase the bottom margin to have space for caption
+            annotations = [dict(xref='paper',
+                                yref='paper',
+                                x=-0.09, y=1.125,
+                                showarrow=False,
+                                align = 'left',
+                                text ='Idicators comparison for the top ten cities.<br><b>Double-click</b> on a legend item to isolate the city, or <b>single-click</b> to show/hide a city.')])
 
     fig_dot = go.Figure(data, layout)
 
