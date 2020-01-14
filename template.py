@@ -32,37 +32,16 @@ df = df_original.copy()
 clickCount = 0
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
 
-#### stacked chart ####
-trace1 = go.Bar(y = df['City'],
-                x = df['Safety Index'],
-                name = 'Safety',
-                orientation = 'h')
-trace2 = go.Bar(y = df['City'],
-                x = df['Health Care Index'],
-                name = 'Health',
-                orientation = 'h')
-trace3 = go.Bar(y = df['City'],
-                x = df['Cost of Living Index'],
-                name = 'Cost of Living',
-                orientation = 'h')
-trace4 = go.Bar(y = df['City'],
-                x = df['Pollution Index'],
-                name = 'Pollution',
-                orientation = 'h')
 
-data = [trace1, trace2, trace3, trace4]
-
-layout = go.Layout(barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h')
-fig_stacked = go.Figure(data, layout)
 
 ################# -- map figure -- #############################################
 
 fig_map = go.Figure(data=go.Scattergeo(
-        lon = df_coord['lng'],
-        lat = df_coord['lat'],
+        lon = [0],
+        lat = [0],
         text = df_coord.index.values,
         mode = 'markers',
-        marker_color = "#0091D5",
+        marker_color = "white",
         marker_size = 7
         ))
 
@@ -84,31 +63,7 @@ fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
                             countrywidth=0.1,
                         ))
 
-df_plot = filtering(df, 'Abu Dhabi, United Arab Emirates')
-df_plot = df_plot.sort_values("Year")
 
-sca_poll = go.Scatter(x=df_plot["Year"],y=df_plot["Pollution Index"])
-sca_costs = go.Scatter(x=df_plot["Year"],y=df_plot["Cost of Living Index"])
-sca_health = go.Scatter(x=df_plot["Year"],y=df_plot["Health Care Index"])
-sca_safety = go.Scatter(x=df_plot["Year"],y=df_plot["Safety Index"])
-
-fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
-fig_lines.add_trace(
-    sca_poll,
-    row=1, col=1
-)
-fig_lines.add_trace(
-    sca_costs,
-    row=1, col=2
-)
-fig_lines.add_trace(
-    sca_health,
-    row=1, col=3
-)
-fig_lines.add_trace(
-    sca_safety,
-    row=1, col=4
-)
 
 ####################################################################################
 ################# -- template start -- #############################################
@@ -246,12 +201,12 @@ app.layout = html.Div([
         ], id = 'second-main-row', className = 'row ml-2 mr-2'),
 
         html.Div([
-            dcc.Graph(id = 'fig-lines',figure = fig_lines,style={'width': '100%'})
+            dcc.Graph(id = 'fig-lines',style={'width': '100%'})
         ],className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
 
         html.Div([
             html.Div([
-                dcc.Graph(id = 'stacked-graph', figure = fig_stacked)
+                dcc.Graph(id = 'stacked-graph')
             ], className = 'col-4 shadow p-4 mb-4 mr-4 bg-white rounded', id = 'stacked-bar-div'),
             html.Div([
                 dcc.Graph(id = 'dots-graph')
@@ -339,7 +294,6 @@ def update_map(top_ten):
     top_ten["place"] = 7
     top_ten.sort_values("final_score", ascending=False, inplace=True)
     city = top_ten[top_ten["Year"] == 2019].head(1).iloc[0]["City"]
-    print(city)
     top_ten.loc[top_ten["City"]==city,"place"] = 2
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
 
@@ -396,7 +350,7 @@ def update_bars(top_ten):
     top_one_city = top_ten[top_ten["Year"] == 2019].head(n=1)["City"]
     top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
-    city = np.unique(top_one["City"].values)[0]
+    city = top_one["City"].values[0]
     fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
     colors = ['blue', 'cyan', 'magenta',
         "#636efa",  "#00cc96",  "#EF553B", 'brown']
@@ -502,7 +456,7 @@ def update_sun(top_ten):
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    cities = np.unique(top_ten_cy["City"].values)
+    cities = top_ten_cy["City"].values
     df_sun = pd.read_csv("data/sun.csv")
     df_sun = df_sun[df_sun["real_city"].isin(cities)]
     reindex_order = [df_sun[df_sun["real_city"] == city].index.values[0] for city in cities]
@@ -540,7 +494,7 @@ def update_rain(top_ten):
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    cities = np.unique(top_ten_cy["City"].values)
+    cities = top_ten_cy["City"].values
 
     df_rain = pd.read_csv("data/rain.csv")
     df_rain = df_rain[df_rain["real_city"].isin(cities)]
@@ -580,10 +534,10 @@ def update_rain(top_ten):
 def update_temp(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    top_ten_cy = top_ten_cy.sort_values("final_score")
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
 
-    cities = np.unique(top_ten_cy["City"].values)
+    cities = top_ten_cy["City"].values
 
     df_temp = pd.read_csv("data/temperature.csv")
     df_temp = df_temp[df_temp['real_city'].isin(cities)]
@@ -724,15 +678,8 @@ def update_box_city(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
-    top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
 
-    top_ten.sort_values("final_score", ascending=False, inplace=True)
-    top_one_city = top_ten[top_ten["Year"] == 2019].head(1)["City"]
-    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
-
-    city = np.unique(top_one["City"].values)[0]
-
-    return city
+    return top_ten_cy.head(n=1)["City"]
 
 ################# -- box temp callback -- #############################################
 @app.callback(
@@ -740,12 +687,11 @@ def update_box_city(top_ten):
     [Input("df-storage", "children")])
 def update_box_temp(top_ten):
     top_ten = pd.read_json(top_ten)
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    top_one_city = top_ten.sort_values("final_score", ascending=False).head(n=1)["City"]
-    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
-
-    city = np.unique(top_one["City"].values)[0]
-
+    city = top_ten_cy.head(n=1)["City"].values[0]
+    
     df_tempe = pd.read_csv("data/temperature.csv")
     top_temp = df_tempe.loc[df_tempe["real_city"] == city]
     mean_temp = top_temp.iloc[:,1:].mean(axis=1).values[0]
@@ -757,11 +703,10 @@ def update_box_temp(top_ten):
     [Input("df-storage", "children")])
 def update_box_rain(top_ten):
     top_ten = pd.read_json(top_ten)
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    top_ten.sort_values("final_score", ascending=False, inplace=True)
-    top_one = top_ten[top_ten["Year"] == 2019].head(1)
-
-    city = np.unique(top_one["City"].values)[0]
+    city = top_ten_cy.head(n=1)["City"].values[0]
 
     df_rain = pd.read_csv("data/rain.csv")
     top_rain = df_rain.loc[df_rain["real_city"] == city]
@@ -774,11 +719,10 @@ def update_box_rain(top_ten):
     [Input("df-storage", "children")])
 def update_box_sun(top_ten):
     top_ten = pd.read_json(top_ten)
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    top_ten.sort_values("final_score", ascending=False, inplace=True)
-    top_one = top_ten[top_ten["Year"] == 2019].head(1)
-
-    city = np.unique(top_one["City"].values)[0]
+    city = top_ten_cy.head(n=1)["City"].values[0]
 
     df_sun = pd.read_csv("data/sun.csv")
     top_sun = df_sun.loc[df_sun["real_city"] == city]
