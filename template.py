@@ -441,7 +441,7 @@ def update_bars(top_ten):
     fig_lines.update_yaxes(range=[-10, 10])
     fig_lines.update_layout(plot_bgcolor="white",
                             margin=dict(t=110,b=15,r=15,l=15),
-                            title=dict(text=city + ": Indicator Development over Time", y=0.98, x=0.5, xanchor="center", yanchor="top"),
+                            title=dict(text=city + ": Indicator Development over Time (Yearly Changes in %)", y=0.98, x=0.5, xanchor="center", yanchor="top"),
                             showlegend=False,
                             )
     return fig_lines
@@ -613,7 +613,7 @@ def update_stackbar(top_ten):
 
     data = [trace1, trace2, trace3, trace4]
 
-    layout=go.Layout(showlegend=False, title="Indicator Proportions of Index Score", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
+    layout=go.Layout(showlegend=False, title="Indicator Proportions of Index Score (in %)", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
             xaxis=dict(showgrid=False, zeroline=False),
             yaxis=dict(showgrid=False, zeroline=False),
             margin_t=80, #increase the bottom margin to have space for caption
