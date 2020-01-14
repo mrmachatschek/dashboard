@@ -383,20 +383,16 @@ def update_map(top_ten):
 ################# -- bars callback -- #############################################
 @app.callback(
     Output('fig-lines', 'figure'),
-    [Input("df-storage", "children"),
-     Input("fig-map","clickData")])
-def update_bars(top_ten,clickData):
+    [Input("df-storage", "children")])
+def update_bars(top_ten):
     top_ten = pd.read_json(top_ten)
-    if clickData != None:
-        top_one = df[df["City"] == clickData["points"][0]["text"]]
-        top_one = top_one.sort_values("Year")
+    
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    else:
-        top_ten_cy = top_ten[top_ten["Year"] == 2019]
-        top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
-        top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
-        top_one_city = top_ten.head(n=1)["City"]
-        top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
+    top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
+    top_one_city = top_ten.head(n=1)["City"]
+    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
 
     city = np.unique(top_one["City"].values)[0]
     fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
@@ -497,23 +493,19 @@ def update_bars(top_ten,clickData):
 ################# -- sun callback -- #############################################
 @app.callback(
     Output('fig-sun', 'figure'),
-    [Input("df-storage", "children"),
-     Input("fig-map","clickData")])
-def update_sun(top_ten,clickData):
+    [Input("df-storage", "children")])
+def update_sun(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-
-    if clickData != None:
-        top_one = df[df["City"] == clickData["points"][0]["text"]]
-        top_one = top_one.sort_values("Year")
-
-    else:
-        top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
     cities = np.unique(top_ten_cy["City"].values)
     df_sun = pd.read_csv("data/sun.csv")
     df_sun = df_sun[df_sun["real_city"].isin(cities)]
+    reindex_order = [df_sun[df_sun["real_city"] == city].index.values[0] for city in cities]
+    df_sun = df_sun.reindex(list(reversed(reindex_order)))
+
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
@@ -539,24 +531,20 @@ def update_sun(top_ten,clickData):
 ################# -- rain callback -- #############################################
 @app.callback(
     Output('fig-rain', 'figure'),
-    [Input("df-storage", "children"),
-     Input("fig-map","clickData")])
-def update_rain(top_ten,clickData):
+    [Input("df-storage", "children")])
+def update_rain(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-
-    if clickData != None:
-        top_one = df[df["City"] == clickData["points"][0]["text"]]
-        top_one = top_one.sort_values("Year")
-
-    else:
-        top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
     cities = np.unique(top_ten_cy["City"].values)
 
     df_rain = pd.read_csv("data/rain.csv")
     df_rain = df_rain[df_rain["real_city"].isin(cities)]
+    reindex_order = [df_rain[df_rain["real_city"] == city].index.values[0] for city in cities]
+    df_rain = df_rain.reindex(list(reversed(reindex_order)))
+
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
@@ -578,33 +566,26 @@ def update_rain(top_ten,clickData):
 ################# -- temperature callback -- #############################################
 @app.callback(
     Output('fig-temp', 'figure'),
-    [Input("df-storage", "children"),
-     Input("fig-map","clickData")])
-def update_temp(top_ten,clickData):
+    [Input("df-storage", "children")])
+def update_temp(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
+    top_ten_cy = top_ten_cy.sort_values("final_score")
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
-
-    if clickData != None:
-        top_one = df[df["City"] == clickData["points"][0]["text"]]
-        top_one = top_one.sort_values("Year")
-
-    else:
-        top_one = top_ten.sort_values("final_score", ascending=False).head(n=1)
 
     cities = np.unique(top_ten_cy["City"].values)
 
     df_temp = pd.read_csv("data/temperature.csv")
     df_temp = df_temp[df_temp['real_city'].isin(cities)]
-
+    
+    reindex_order = [df_temp[df_temp["real_city"] == city].index.values[0] for city in cities]
+    df_temp = df_temp.reindex(list(reversed(reindex_order)))
 
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
     x = [j for j in range(1, 13)]
     y = city_only(df_temp['real_city'].values)
     z = df_temp[months].values
-
 
     annotations = go.Annotations()
     for n, row in enumerate(z):
@@ -630,31 +611,32 @@ def update_temp(top_ten,clickData):
     [Input("df-storage", "children")])
 def update_stackbar(top_ten):
     top_ten = pd.read_json(top_ten)
-    top_ten = top_ten[top_ten["Year"] == 2019]
-    top_ten = top_ten.sort_values("final_score", ascending=True)
+    top_ten = top_ten.sort_values("final_score")
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
-    top_ten['Safety Index - 1'] = ((top_ten['Safety Index'] * top_ten['saf']) / top_ten['final_score'])*100
-    top_ten['Health Care Index - 1'] = ((top_ten['Health Care Index'] * top_ten['hea']) / top_ten['final_score'])*100
-    top_ten['Cost of Living Index - 1'] = ((top_ten['Cost of Living Index'] * top_ten['cos']) / top_ten['final_score'])*100
-    top_ten['Pollution Index - 1'] = ((top_ten['Pollution Index'] * top_ten['pol']/ top_ten['final_score']))*100
-    top_ten = top_ten.sort_values("final_score", ascending=True)
-    trace1 = go.Bar(y = city_only(top_ten['City']),
-                    x = top_ten['Safety Index - 1'],
+    top_ten_cy['Safety Index - 1'] = ((top_ten_cy['Safety Index'] * top_ten_cy['saf']) / top_ten_cy['final_score'])*100
+    top_ten_cy['Health Care Index - 1'] = ((top_ten_cy['Health Care Index'] * top_ten_cy['hea']) / top_ten_cy['final_score'])*100
+    top_ten_cy['Cost of Living Index - 1'] = ((top_ten_cy['Cost of Living Index'] * top_ten_cy['cos']) / top_ten_cy['final_score'])*100
+    top_ten_cy['Pollution Index - 1'] = ((top_ten_cy['Pollution Index'] * top_ten_cy['pol']/ top_ten_cy['final_score']))*100
+
+    trace1 = go.Bar(y = city_only(top_ten_cy['City']),
+                    x = top_ten_cy['Safety Index - 1'],
                     name = 'Safety',
                     orientation = 'h',
                     marker_color = '#001126')
-    trace2 = go.Bar(y = city_only(top_ten['City']),
-                    x = top_ten['Health Care Index - 1'],
+    trace2 = go.Bar(y = city_only(top_ten_cy['City']),
+                    x = top_ten_cy['Health Care Index - 1'],
                     name = 'Health',
                     orientation = 'h',
                     marker_color = '#16536e')
-    trace3 = go.Bar(y = city_only(top_ten['City']),
-                    x = top_ten['Cost of Living Index - 1'],
+    trace3 = go.Bar(y = city_only(top_ten_cy['City']),
+                    x = top_ten_cy['Cost of Living Index - 1'],
                     name = 'Cost of Living',
                     orientation = 'h',
                     marker_color = '#489eba')
-    trace4 = go.Bar(y = city_only(top_ten['City']),
-                    x = top_ten['Pollution Index - 1'],
+    trace4 = go.Bar(y = city_only(top_ten_cy['City']),
+                    x = top_ten_cy['Pollution Index - 1'],
                     name = 'Pollution',
                     orientation = 'h',
                     marker_color = '#b3c9d9')
@@ -673,19 +655,19 @@ def update_stackbar(top_ten):
     [Input("df-storage", "children")])
 def update_dots(top_ten):
     top_ten = pd.read_json(top_ten)
-
     top_ten = top_ten.sort_values("final_score")
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
+    
     min_ind = min(top_ten_cy[["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]].min().values)
 
     data = []
 
     #initial colors by Michael
-    colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)"]
+    #colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)"]
 
     #updated color scheme
-    #colors = ['#494ca2','#8186d5','#c6cbef','#85cfcb','#219897','#ac3e31','#3282b8','#0f4c75','#bbe1fa','#b3c100','#000000']
-
+    colors = ['#494ca2','#8186d5','#c6cbef','#85cfcb','#219897','#ac3e31','#3282b8','#0f4c75','#bbe1fa','#b3c100','#000000']
 
     count = 0
     for c in top_ten_cy["City"].values:
@@ -694,8 +676,6 @@ def update_dots(top_ten):
         trace = go.Scatter(y=y,x=x, mode="markers", text=c, name=c,marker_color=colors[count%len(colors)], marker=dict(size=15), hovertext=c )
         count += 1
         data.append(trace)
-
-
 
     layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
