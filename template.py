@@ -512,7 +512,7 @@ def update_rain(top_ten):
 
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size), 
                                hovertemplate = 'City: %{y}'+'<br>Month: %{x}<br>'+'%{text}'+'<extra></extra>',
-                               text = 'Rainy days: {}'.format(size)))
+                               text = ['Rainy days: {}'.format(size)]))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy Days by City and Month"),
@@ -613,7 +613,7 @@ def update_stackbar(top_ten):
 
     data = [trace1, trace2, trace3, trace4]
 
-    layout=go.Layout(showlegend=False, title="Top cities compared", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
+    layout=go.Layout(showlegend=False, title="Indicator Proportions of Index Score", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
             xaxis=dict(showgrid=False, zeroline=False),
             yaxis=dict(showgrid=False, zeroline=False),
             margin_t=80, #increase the bottom margin to have space for caption
