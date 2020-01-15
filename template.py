@@ -201,8 +201,15 @@ app.layout = html.Div([
         ], id = 'second-main-row', className = 'row ml-2 mr-2'),
 
         html.Div([
+            html.Div([
+                'Indicator Development over Time'
+            ], className = 'col-12', style={'width':'100%', 'font-size':17, 'text-align':'center', 'font-family': ['Open Sans', 'verdana', 'arial', 'sans-serif'], 'color': 'rgb(42, 63, 95)'}),
+            
+            html.Div([
             dcc.Graph(id = 'fig-lines',style={'width': '100%'})
-        ],className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
+            ], className = 'col-12'),
+        ], id = 'fig-lines-container', style={'width': '100%'}, className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
+        
 
         html.Div([
             html.Div([
@@ -449,10 +456,9 @@ def update_bars(top_ten):
     )
     fig_lines.update_yaxes(range=[-10, 10])
     fig_lines.update_layout(plot_bgcolor="white",
-                            margin=dict(t=110,b=15,r=15,l=15),
-                            title=dict(text=city + ": Indicator Development over Time (Yearly Changes in %)", y=0.98, x=0.5, xanchor="center", yanchor="top"),
-                            showlegend=False,
-                            )
+                            margin=go.layout.Margin(t=50,b=15,r=15,l=15),
+                            title=dict(text='<b>'+city+'</b>' + ": Yearly changes in % compared to previous year.", y=0.98, x=0.5, xanchor="center", yanchor="top", font = dict(size = 12)),
+                            showlegend=False)
     return fig_lines
 
 ################# -- sun callback -- #############################################
@@ -525,13 +531,7 @@ def update_rain(top_ten):
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy Days by City and Month"),
-            yaxis=dict(showgrid=False, zeroline=False),
-            margin_t=80, #increase the bottom margin to have space for caption
-            annotations = [dict(xref='paper',
-                                yref='paper',
-                                x=-0.165, y=1.075,
-                                showarrow=False,
-                                text ='This graph shows the average number of rainy days for each, for each city. ')])
+            yaxis=dict(showgrid=False, zeroline=False))
 
     fig_rain = go.Figure(data, layout)
     return fig_rain
@@ -560,21 +560,9 @@ def update_temp(top_ten):
     y = city_only(df_temp['real_city'].values)
     z = df_temp[months].values
 
- #   annotations = go.Annotations()
- # for n, row in enumerate(z):
- #       for m, val in enumerate(row):
- #           annotations.append(go.Annotation(text=str(z[n][m]), x=x[m], y=y[n], font=dict(color = 'white'),
- #                                        xref='x1', yref='y1', showarrow=False))
-
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature by City and Month"),
-            yaxis=dict(showgrid=False, zeroline=False),
-            margin_t=80, #increase the bottom margin to have space for caption
-            annotations = [dict(xref='paper',
-                                yref='paper',
-                                x=-0.165, y=1.075,
-                                showarrow=False,
-                                text ='This graph shows the average temperatures per month, for each city. ')])
+            yaxis=dict(showgrid=False, zeroline=False))
 
     fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu',
                                            reversescale=True, colorbar=dict(thickness = 10, xpad = 0, ypad = 0),
@@ -672,7 +660,7 @@ def update_dots(top_ten):
         count += 1
         data.append(trace)
 
-    layout=go.Layout( title="Indicators of Top 10 Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
+    layout=go.Layout( title="Indicator Comparisons of Top Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
             yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"),
             margin_t=80, #increase the bottom margin to have space for caption
