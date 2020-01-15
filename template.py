@@ -7,6 +7,7 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import plotly.offline as pyo
 from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc 
 
 def city_only(cities):
     newlist = []
@@ -86,6 +87,7 @@ app.title = 'Find Your Paradise'
 
 
 app.layout = html.Div([
+    
 
     html.Div(id="df-storage", style={"display": "None"}),
 
@@ -186,17 +188,18 @@ app.layout = html.Div([
                 html.Div([html.Button('Show All', id='show-all')], style={"display":"None"}),
             ], id = 'preferences-div', className = 'col-3 shadow p-4 mr-4 mb-5 bg-white rounded'),
             html.Div([
-                html.Div([html.Div([html.H4("Your city is")],),html.Div([html.H4("...")],id="box-city", style={"font-size":25, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
-                html.Div([html.Div([html.H4("Average Temperature")]),html.Div([html.H4("...")], id="box-temp", style={"font-size":30, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
-                html.Div([html.Div([html.H4("Rainy days per year")]),html.Div([html.H4("...")], id="box-rain", style={"font-size":30, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
-                html.Div([html.Div([html.H4("Sunny hours per day")]),html.Div([html.H4("...")], id="box-sun", style={"font-size":30, "font-weight":"bold"})], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Your city is")],),dcc.Loading(html.Div([html.H4("...")],id="box-city", style={"font-size":25, "font-weight":"bold"}))], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Average Temperature")]),dcc.Loading(html.Div([html.H4("")], id="box-temp", style={"font-size":30, "font-weight":"bold"}))], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Rainy days per year")]),dcc.Loading(html.Div([html.H4("")], id="box-rain", style={"font-size":30, "font-weight":"bold"}))], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
+                html.Div([html.Div([html.H4("Sunny hours per day")]),dcc.Loading(html.Div([html.H4("")], id="box-sun", style={"font-size":30, "font-weight":"bold"}))], className = 'h-auto shadow mb-3 p-4 bg-white rounded'),
 
             ],className="col mr-2"),
 
             # map div
             html.Div([
+                dcc.Loading([
                 dcc.Graph(id = 'fig-map',
-                        figure = fig_map)
+                        figure = fig_map)], id="map-loading")
             ], id = 'map-div', className = 'col-7 shadow mb-5 bg-white rounded'),
         ], id = 'second-main-row', className = 'row ml-2 mr-2'),
 
@@ -204,31 +207,37 @@ app.layout = html.Div([
             html.Div([
                 'Indicator Development over Time'
             ], className = 'col-12', style={'width':'100%', 'font-size':17, 'text-align':'center', 'font-family': ['Open Sans', 'verdana', 'arial', 'sans-serif'], 'color': 'rgb(42, 63, 95)'}),
-            
+
             html.Div([
-            dcc.Graph(id = 'fig-lines',style={'width': '100%'})
-            ], className = 'col-12'),
+                dcc.Loading(
+                dcc.Graph(id = 'fig-lines',style={'width': '100%'}))
+                ], className = 'col-12'),
         ], id = 'fig-lines-container', style={'width': '100%'}, className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
         
 
         html.Div([
             html.Div([
-                dcc.Graph(id = 'stacked-graph')
+                dcc.Loading(
+                dcc.Graph(id = 'stacked-graph'))
             ], className = 'col-4 shadow p-4 mb-4 mr-4 bg-white rounded', id = 'stacked-bar-div'),
             html.Div([
-                dcc.Graph(id = 'dots-graph')
+                dcc.Loading(
+                dcc.Graph(id = 'dots-graph'))
             ], className="col  shadow p-4 mb-4 bg-white rounded")
         ], id = 'chart-div', className = 'row ml-2 mr-2'),
 
         html.Div([
             html.Div([
-                dcc.Graph(id="fig-temp", config={'displayModeBar': False})
+                dcc.Loading(
+                dcc.Graph(id="fig-temp", config={'displayModeBar': False}))
             ], className = 'col shadow p-4 mb-5 mr-4 bg-white rounded'),
             html.Div([
-                dcc.Graph(id="fig-sun", config={'displayModeBar': False})
+                dcc.Loading(
+                dcc.Graph(id="fig-sun", config={'displayModeBar': False}))
             ], className = 'col shadow p-4 mb-5 mr-4 bg-white rounded'),
             html.Div([
-                dcc.Graph(id="fig-rain", config={'displayModeBar': False})
+                dcc.Loading(
+                dcc.Graph(id="fig-rain", config={'displayModeBar': False}))
             ], className = 'col shadow p-4 mb-5 bg-white rounded')], className="row mr-2 ml-2"),
     ], id = 'outer-div', className = 'mb-2 mr-2 ml-2 p-1')
 ],className="bg-light")
