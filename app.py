@@ -7,7 +7,6 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import plotly.offline as pyo
 from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc
 
 def city_only(cities):
     newlist = []
@@ -81,6 +80,7 @@ external_ss = [
     }
 ]
 app = dash.Dash(__name__, external_stylesheets=external_ss)
+server = app.server 
 
 app.title = 'Find Your Paradise'
 
