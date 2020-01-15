@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import plotly.offline as pyo
 from dash.dependencies import Input, Output, State
-import dash_bootstrap_components as dbc 
+import dash_bootstrap_components as dbc
 
 def city_only(cities):
     newlist = []
@@ -87,7 +87,7 @@ app.title = 'Find Your Paradise'
 
 
 app.layout = html.Div([
-    
+
 
     html.Div(id="df-storage", style={"display": "None"}),
 
@@ -213,7 +213,7 @@ app.layout = html.Div([
                 dcc.Graph(id = 'fig-lines',style={'width': '100%'}))
                 ], className = 'col-12'),
         ], id = 'fig-lines-container', style={'width': '100%'}, className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
-        
+
 
         html.Div([
             html.Div([
@@ -307,11 +307,11 @@ def update_map(top_ten):
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
-    top_ten["place"] = 7
+    top_ten["place"] = "#0390d4"
     top_ten.sort_values("final_score", ascending=False, inplace=True)
     top_ten.reset_index(drop=True, inplace=True)
     city = top_ten[top_ten["Year"] == 2019].head(1).iloc[0]["City"]
-    top_ten.loc[top_ten["City"]==city,"place"] = 2
+    top_ten.loc[top_ten["City"]==city,"place"] = "#d6565f"
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.reset_index(drop=True)
@@ -326,12 +326,7 @@ def update_map(top_ten):
         mode = 'markers',
         marker = dict(
             size = 7,
-            autocolorscale =False,
-            colorscale = 'Rainbow',
-            cmin = 0,
             color = coord_tf['place'], #coord_tf["final_score"]
-            cmax = 8,
-
         )))
 
     fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
@@ -465,7 +460,8 @@ def update_bars(top_ten):
         ),
         row=1, col=2
     )
-    fig_lines.update_yaxes(range=[-10, 10])
+    fig_lines.update_xaxes(tickvals=[2013, 2014, 2015, 2016,2017,2018,2019])
+
     fig_lines.update_layout(plot_bgcolor="white",
                             margin=go.layout.Margin(t=50,b=15,r=15,l=15),
                             title=dict(text='<b>'+city+'</b>' + ": Yearly changes in % compared to previous year.", y=0.98, x=0.5, xanchor="center", yanchor="top", font = dict(size = 12)),
@@ -536,7 +532,7 @@ def update_rain(top_ten):
         x = [i for j in range(1,len(df_rain['real_city'].values) + 1)]
         size = df_rain[months[i-1]]
 
-        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size), 
+        data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size),
                                hovertext = [str(s) + " days" for s in size.values], hoverinfo="text"))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
@@ -640,6 +636,7 @@ def update_stackbar(top_ten):
                                 text ='Shows to which extend each indicator contributes to the overall index score.')])
 
     fig_stacked = go.Figure(data, layout)
+    fig_stacked.update_layout(showlegend=True)
     return fig_stacked
 
 ################# -- dots callback -- #############################################
@@ -706,7 +703,7 @@ def update_box_temp(top_ten):
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
 
     city = top_ten_cy.head(n=1)["City"].values[0]
-    
+
     df_tempe = pd.read_csv("data/temperature.csv")
     top_temp = df_tempe.loc[df_tempe["real_city"] == city]
     mean_temp = top_temp.iloc[:,1:].mean(axis=1).values[0]
