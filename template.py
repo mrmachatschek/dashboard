@@ -303,6 +303,7 @@ def update_map(top_ten):
         lon = coord_tf['lng'],
         lat = coord_tf['lat'],
         text = coord_tf['City'],
+        hoverinfo = "text",
         mode = 'markers',
         marker = dict(
             size = 7,
@@ -404,6 +405,8 @@ def update_bars(top_ten):
             x = year,
             y = y_poll,
             name = city,
+            hovertext=[str(round(y,2)) + "%" for y in y_poll],
+            hoverinfo="text",
             showlegend = False,
             marker_color = top_one["pol_color"] #use this for negative change
         ),
@@ -414,6 +417,8 @@ def update_bars(top_ten):
             x=year,
             y=y_safe,
             name=city,
+            hovertext=[str(round(y,2)) + "%" for y in y_safe],
+            hoverinfo="text",
             showlegend=False,
             marker_color = top_one["saf_color"]
         ),
@@ -424,6 +429,8 @@ def update_bars(top_ten):
             x=year,
             y=y_heal,
             name=city,
+            hovertext=[str(round(y,2)) + "%" for y in y_heal],
+            hoverinfo="text",
             showlegend=False,
             marker_color = top_one["hea_color"] # use this for positive change
         ),
@@ -434,6 +441,8 @@ def update_bars(top_ten):
             x=year,
             y=y_cost,
             name=city,
+            hovertext=[str(round(y,2)) + "%" for y in y_cost],
+            hoverinfo="text",
             marker_color = top_one["cos_color"]
         ),
         row=1, col=2
@@ -592,21 +601,29 @@ def update_stackbar(top_ten):
 
     trace1 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Safety Index - 1'],
+                    hovertext=[str(round(p)) + "%" for p in top_ten_cy['Safety Index - 1'].values],
+                    hoverinfo="text",
                     name = 'Safety',
                     orientation = 'h',
                     marker_color = '#001126')
     trace2 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Health Care Index - 1'],
+                    hovertext=[str(round(p)) + "%" for p in top_ten_cy['Health Care Index - 1'].values],
+                    hoverinfo="text",
                     name = 'Health',
                     orientation = 'h',
                     marker_color = '#16536e')
     trace3 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Cost of Living Index - 1'],
+                    hovertext=[str(round(p)) + "%" for p in top_ten_cy['Cost of Living Index - 1'].values],
+                    hoverinfo="text",
                     name = 'Cost of Living',
                     orientation = 'h',
                     marker_color = '#489eba')
     trace4 = go.Bar(y = city_only(top_ten_cy['City']),
                     x = top_ten_cy['Pollution Index - 1'],
+                    hovertext=[str(round(p)) + "%" for p in top_ten_cy['Pollution Index - 1'].values],
+                    hoverinfo="text",
                     name = 'Pollution',
                     orientation = 'h',
                     marker_color = '#b3c9d9')
@@ -651,7 +668,7 @@ def update_dots(top_ten):
     for c in top_ten_cy["City"].values:
         y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
         x = [top_ten_cy[top_ten_cy["City"] == c]["Pollution Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Safety Index"].values[0], top_ten_cy[top_ten_cy["City"] == c]["Cost of Living Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Health Care Index"].values[0] ]
-        trace = go.Scatter(y=y,x=x, mode="markers", text=c, name=c,marker_color=colors[count%len(colors)], marker=dict(size=15), hovertext=c )
+        trace = go.Scatter(y=y,x=x, mode="markers", hovertext=[str(xi) + " - "+ c for xi in x], hoverinfo="text", name=str(count+1) + ". " + c, marker_color=colors[count%len(colors)], marker=dict(size=15))
         count += 1
         data.append(trace)
 
