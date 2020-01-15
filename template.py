@@ -214,16 +214,45 @@ app.layout = html.Div([
                 ], className = 'col-12'),
         ], id = 'fig-lines-container', style={'width': '100%'}, className="row shadow p-4 mb-5 mr-2 ml-2 bg-white rounded"),
 
-
+        # stacked and dot bar div
         html.Div([
+            
+            # stacked bar div
             html.Div([
-                dcc.Loading(
-                dcc.Graph(id = 'stacked-graph'))
-            ], className = 'col-4 shadow p-4 mb-4 mr-4 bg-white rounded', id = 'stacked-bar-div'),
+                
+                html.Div([
+                    'Indicator Proportions of Index Score (in %)'
+                ], className = 'col-12', style={'width':'100%', 'font-size':17, 'text-align':'left', 'font-family': ['Open Sans', 'verdana', 'arial', 'sans-serif'], 'color': 'rgb(42, 63, 95)'}),
+
+                html.Div([
+                    'Shows to which extend each indicator contributes to the overall index score.'
+                ], className = 'col-12', style={'width':'100%', 'font-size':12, 'text-align':'left', 'font-family': ['Open Sans', 'verdana', 'arial', 'sans-serif'], 'color': 'rgb(42, 63, 95)'}),
+
+
+                html.Div([
+                    dcc.Loading(
+                    dcc.Graph(id = 'stacked-graph'))
+                ], className = 'col-12', id = 'stacked-bar-div'),
+            ], id = 'stacked-bar-container', className = 'col-4 shadow p-4 mb-4 mr-4 bg-white rounded'),
+            
+            # dot plot div
             html.Div([
-                dcc.Loading(
-                dcc.Graph(id = 'dots-graph'))
-            ], className="col  shadow p-4 mb-4 bg-white rounded")
+                
+                html.Div([
+                'Indicator Comparisons of Top Cities'
+                ], className = 'col-12', style={'width':'100%', 'font-size':17, 'text-align':'left', 'font-family': ['Open Sans', 'verdana', 'arial', 'sans-serif'], 'color': 'rgb(42, 63, 95)'}),
+
+                html.Div([
+                    'Idicators comparison for the top ten cities.', 
+                    html.Br(),
+                    dcc.Markdown('**Double-click** on a legend item to isolate the city, or **single-click** to show/hide a city.')
+                ], className = 'col-12', style={'width':'100%', 'font-size':12, 'text-align':'left', 'font-family': ['Open Sans', 'verdana', 'arial', 'sans-serif'], 'color': 'rgb(42, 63, 95)'}),
+
+                html.Div([
+                    dcc.Loading(
+                    dcc.Graph(id = 'dots-graph'))
+                ], className="col-12")
+            ], id = 'dot-container', className="col  shadow p-4 mb-4 bg-white rounded"),
         ], id = 'chart-div', className = 'row ml-2 mr-2'),
 
         html.Div([
@@ -624,16 +653,9 @@ def update_stackbar(top_ten):
 
     data = [trace1, trace2, trace3, trace4]
 
-    layout=go.Layout(showlegend=False, title="Indicator Proportions of Index Score (in %)", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
+    layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=10,b=5,r=5,l=5), barmode='stack', xaxis_tickangle=-45, legend_orientation = 'h',
             xaxis=dict(showgrid=False, zeroline=False),
-            yaxis=dict(showgrid=False, zeroline=False),
-            margin_t=80, #increase the bottom margin to have space for caption
-            annotations = [dict(xref='paper',
-                                yref='paper',
-                                x=-0.115, y=1.075,
-                                showarrow=False,
-                                align = 'left',
-                                text ='Shows to which extend each indicator contributes to the overall index score.')])
+            yaxis=dict(showgrid=False, zeroline=False))
 
     fig_stacked = go.Figure(data, layout)
     fig_stacked.update_layout(showlegend=True)
@@ -667,16 +689,9 @@ def update_dots(top_ten):
         count += 1
         data.append(trace)
 
-    layout=go.Layout( title="Indicator Comparisons of Top Cities", plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5), legend_orientation = 'h',
+    layout=go.Layout(plot_bgcolor="white", margin=dict(t=10,b=5,r=5,l=5), legend_orientation = 'h',
             xaxis=dict(range=[min_ind - 3, 101], zeroline=False, showgrid=False),
-            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"),
-            margin_t=80, #increase the bottom margin to have space for caption
-            annotations = [dict(xref='paper',
-                                yref='paper',
-                                x=-0.09, y=1.125,
-                                showarrow=False,
-                                align = 'left',
-                                text ='Idicators comparison for the top ten cities.<br><b>Double-click</b> on a legend item to isolate the city, or <b>single-click</b> to show/hide a city.')])
+            yaxis=dict(zeroline=False, showgrid=True, gridwidth=1, gridcolor="lightgray"))
 
     fig_dot = go.Figure(data, layout)
 
