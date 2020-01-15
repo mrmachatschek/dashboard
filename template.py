@@ -91,7 +91,7 @@ app.layout = html.Div([
 
     # title div
     html.Div([
-        html.H1(children = 'Title Placeholder')
+        html.H1(children = 'Paradise Finder')
         ], id = 'title-div', className = 'row justify-content-md-center', style = {'padding':15, 'margin-bottom':0}),
 
     # first container holding first page
@@ -300,16 +300,19 @@ def update_map(top_ten):
     top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
     top_ten["place"] = 7
     top_ten.sort_values("final_score", ascending=False, inplace=True)
+    top_ten.reset_index(drop=True, inplace=True)
     city = top_ten[top_ten["Year"] == 2019].head(1).iloc[0]["City"]
     top_ten.loc[top_ten["City"]==city,"place"] = 2
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
+    top_ten_cy = top_ten[top_ten["Year"] == 2019]
+    top_ten_cy = top_ten_cy.reset_index(drop=True)
 
     coord_tf = pd.merge(coord_tf, top_ten, how='right',left_on="City", right_on="City")
 
     fig_map = go.Figure(data=go.Scattergeo(
         lon = coord_tf['lng'],
         lat = coord_tf['lat'],
-        text = coord_tf['City'],
+        text = [str(top_ten_cy[top_ten_cy["City"] == c].index.values[0] + 1) + "." + c for c in coord_tf['City'].values],
         hoverinfo = "text",
         mode = 'markers',
         marker = dict(
@@ -339,7 +342,6 @@ def update_map(top_ten):
                             #resolution = 50,
                             countrywidth=0.1,
                         ))
-
     return fig_map
 
 ################# -- bars callback -- #############################################
@@ -488,7 +490,7 @@ def update_sun(top_ten):
 
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol=18, color="#FFAE00", size=size*1.5), hoverinfo="none"))
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#FFAE00", size=size,
-                                                                       line=dict(width=1,color='#FFAE00')), hoverinfo="none"))
+                                                                       line=dict(width=1,color='#FFAE00')), hovertext = [str(s) + " hours" for s in size.values], hoverinfo="text"))
 
 
 
@@ -526,8 +528,7 @@ def update_rain(top_ten):
         size = df_rain[months[i-1]]
 
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#0091D5", size=size), 
-                               hovertemplate = 'City: %{y}'+'<br>Month: %{x}<br>'+'%{text}'+'<extra></extra>',
-                               text = ['Rainy days: {}'.format(size)]))
+                               hovertext = [str(s) + " days" for s in size.values], hoverinfo="text"))
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Rainy Days by City and Month"),
@@ -564,7 +565,7 @@ def update_temp(top_ten):
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Average Temperature by City and Month"),
             yaxis=dict(showgrid=False, zeroline=False))
 
-    fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu',
+    fig_temp = go.Figure(data = go.Heatmap(z = z, x = x, y = y, xgap = 1, ygap = 1, colorscale = 'RdBu', hovertemplate="%{z}°C<extra></extra>",
                                            reversescale=True, colorbar=dict(thickness = 10, xpad = 0, ypad = 0),
                                            zmid = 5),
                          layout = layout)
@@ -656,7 +657,7 @@ def update_dots(top_ten):
     for c in top_ten_cy["City"].values:
         y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
         x = [top_ten_cy[top_ten_cy["City"] == c]["Pollution Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Safety Index"].values[0], top_ten_cy[top_ten_cy["City"] == c]["Cost of Living Index"].values[0],top_ten_cy[top_ten_cy["City"] == c]["Health Care Index"].values[0] ]
-        trace = go.Scatter(y=y,x=x, mode="markers", hovertext=[str(xi) + " - "+ c for xi in x], hoverinfo="text", name=str(count+1) + ". " + c, marker_color=colors[count%len(colors)], marker=dict(size=15))
+        trace = go.Scatter(y=y,x=x, mode="markers", hovertext=[str(round(xi,2)) + " - "+ c for xi in x], hoverinfo="text", name=str(count+1) + ". " + c, marker_color=colors[count%len(colors)], marker=dict(size=15))
         count += 1
         data.append(trace)
 
