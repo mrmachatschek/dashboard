@@ -4,5 +4,5 @@
 This project was implemented in **Python** with the libraries **Plotly** and **Dash**. 
 
 The app was deployed on heroku: 
-[paradise-finder.herokuapp.com]
+[http://paradise-finder.herokuapp.com]
 
