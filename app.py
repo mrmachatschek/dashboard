@@ -8,6 +8,7 @@ from plotly.subplots import make_subplots
 import plotly.offline as pyo
 from dash.dependencies import Input, Output, State
 
+### Helping functions #####
 def city_only(cities):
     newlist = []
     for city in cities:
@@ -15,26 +16,14 @@ def city_only(cities):
         newlist.append(city)
     return newlist
 
-def filtering(df,name,year=0,index=0):
-    df = df[df['City'] == name]
-    if year == 0:
-        df = df[df['City'] == name]
-    elif year == year:
-        df = df[df['Year'] == year]
-    if index == 0:
-        df
-    elif index == index:
-        df = df[index]
-    return df
-
 df_original = pd.read_csv("data/joined_continent.csv", index_col=0)
 df = df_original.copy()
 clickCount = 0
 df_coord = pd.read_csv('data/coordinates.csv', index_col=0)
 
+##############################
 
-
-################# -- map figure -- #############################################
+################# -- initial map figure -- #############################################
 
 fig_map = go.Figure(data=go.Scattergeo(
         lon = [0],
@@ -63,12 +52,6 @@ fig_map.update_layout(margin = dict(l=0, r=0, t=0, b=0),
                             countrywidth=0.1,
                         ))
 
-
-
-####################################################################################
-################# -- template start -- #############################################
-####################################################################################
-
 # load external CSS
 external_ss = [
     'https://codepen.io/chriddyp/pen/bWLwgP.css',
@@ -79,16 +62,17 @@ external_ss = [
         'crossorigin': 'anonymous'
     }
 ]
+
+############### -- initialize dash project --- ############################
 app = dash.Dash(__name__, external_stylesheets=external_ss)
-server = app.server 
-
 app.title = 'Find Your Paradise'
+server = app.server
 
-
+####################################################################################
+################# -- template start -- #############################################
+####################################################################################
 
 app.layout = html.Div([
-
-
     html.Div(id="df-storage", style={"display": "None"}),
 
     # title div
@@ -294,6 +278,7 @@ def reset_clickData(n_clicks):
 def cleardrop(clicks):
     if clicks != None:
         return None
+    
 ################# -- df storage callback -- #############################################
 @app.callback(
     Output('df-storage', 'children'),
@@ -335,14 +320,13 @@ def update_map(top_ten):
     top_ten = pd.read_json(top_ten)
     top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
-    top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
+    #top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
     top_ten["place"] = "#0390d4"
     top_ten.sort_values("final_score", ascending=False, inplace=True)
     top_ten.reset_index(drop=True, inplace=True)
     city = top_ten[top_ten["Year"] == 2019].head(1).iloc[0]["City"]
     top_ten.loc[top_ten["City"]==city,"place"] = "#d6565f"
     coord_tf = df_coord[df_coord.index.isin(top_ten["City"].values)]
-    top_ten_cy = top_ten[top_ten["Year"] == 2019]
     top_ten_cy = top_ten_cy.reset_index(drop=True)
 
     coord_tf = pd.merge(coord_tf, top_ten, how='right',left_on="City", right_on="City")
@@ -384,21 +368,10 @@ def update_map(top_ten):
 def update_bars(top_ten):
     top_ten = pd.read_json(top_ten)
 
-    top_ten_cy = top_ten[top_ten["Year"] == 2019]
-    top_ten_cy = top_ten_cy.sort_values("final_score", ascending=False)
+    top_one_city = top_ten[top_ten["Year"] == 2019].sort_values("final_score",ascending=False).head(n=1)["City"].values[0]
+    top_one = top_ten[top_ten["City"] == top_one_city]
 
-    top_ten = df[df["City"].isin(top_ten_cy.head(n=10)["City"].values)]
-    top_ten.sort_values("final_score", ascending=False, inplace=True)
-
-    top_one_city = top_ten[top_ten["Year"] == 2019].head(n=1)["City"]
-    top_one = top_ten[top_ten["City"] == top_one_city.values[0]]
-
-    city = top_one["City"].values[0]
     fig_lines = make_subplots(rows=1, cols=4,subplot_titles=('Clean Air', 'Cheap Living','Health', 'Safety'))
-    colors = ['blue', 'cyan', 'magenta',
-        "#636efa",  "#00cc96",  "#EF553B", 'brown']
-
-    color_city = 0
 
     year = top_one["Year"].copy()
     year.sort_values(inplace=True)
@@ -446,7 +419,7 @@ def update_bars(top_ten):
         go.Bar(
             x = year,
             y = y_poll,
-            name = city,
+            name = top_one_city,
             hovertext=[str(round(y,2)) + "%" for y in y_poll],
             hoverinfo="text",
             showlegend = False,
@@ -458,7 +431,7 @@ def update_bars(top_ten):
         go.Bar(
             x=year,
             y=y_safe,
-            name=city,
+            name=top_one_city,
             hovertext=[str(round(y,2)) + "%" for y in y_safe],
             hoverinfo="text",
             showlegend=False,
@@ -470,7 +443,7 @@ def update_bars(top_ten):
         go.Bar(
             x=year,
             y=y_heal,
-            name=city,
+            name=top_one_city,
             hovertext=[str(round(y,2)) + "%" for y in y_heal],
             hoverinfo="text",
             showlegend=False,
@@ -482,7 +455,7 @@ def update_bars(top_ten):
         go.Bar(
             x=year,
             y=y_cost,
-            name=city,
+            name=top_one_city,
             hovertext=[str(round(y,2)) + "%" for y in y_cost],
             hoverinfo="text",
             marker_color = top_one["cos_color"]
@@ -493,7 +466,7 @@ def update_bars(top_ten):
 
     fig_lines.update_layout(plot_bgcolor="white",
                             margin=go.layout.Margin(t=50,b=15,r=15,l=15),
-                            title=dict(text='<b>'+city+'</b>' + ": Yearly changes in % compared to previous year.", y=0.98, x=0.5, xanchor="center", yanchor="top", font = dict(size = 12)),
+                            title=dict(text='<b>'+top_one_city+'</b>' + ": Yearly changes in % compared to previous year.", y=0.98, x=0.5, xanchor="center", yanchor="top", font = dict(size = 12)),
                             showlegend=False)
     return fig_lines
 
@@ -513,7 +486,6 @@ def update_sun(top_ten):
     reindex_order = [df_sun[df_sun["real_city"] == city].index.values[0] for city in cities]
     df_sun = df_sun.reindex(list(reversed(reindex_order)))
 
-
     months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
     data = []
     y = city_only(df_sun['real_city'].values)
@@ -525,8 +497,6 @@ def update_sun(top_ten):
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol=18, color="#FFAE00", size=size*1.5), hoverinfo="none"))
         data.append(go.Scatter(x=x, y = y, mode="markers", marker=dict(symbol="circle", color="#FFAE00", size=size,
                                                                        line=dict(width=1,color='#FFAE00')), hovertext = [str(s) + " hours" for s in size.values], hoverinfo="text"))
-
-
 
     layout=go.Layout(showlegend=False, plot_bgcolor="white", margin=dict(t=50,b=5,r=5,l=5),
             xaxis=dict(showgrid=False, zeroline=False, ticktext=months, tickvals=[1,2,3,4,5,6,7,8,9,10,11,12]),title=dict(text="Daily Sun Hours by City and Month"),
@@ -674,13 +644,7 @@ def update_dots(top_ten):
     min_ind = min(top_ten_cy[["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]].min().values)
 
     data = []
-
-    #initial colors by Michael
-    #colors = ["rgb(195,54,44)","rgb(255,134,66)","rgb(102,141,60)","rgb(0,151,172)","rgb(0,121,150)","rgb(195,183,172)","rgb(129,108,91)","rgb(177,221,161)","rgb(151,234,244)","rgb(6,194,244)"]
-
-    #updated color scheme
     colors = ['#494ca2','#8186d5','#c6cbef','#85cfcb','#219897','#ac3e31','#3282b8','#0f4c75','#bbe1fa','#b3c100','#000000']
-
     count = 0
     for c in top_ten_cy["City"].values:
         y = ["Pollution Index", "Safety Index","Cost of Living Index", "Health Care Index"]
